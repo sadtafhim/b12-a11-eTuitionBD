@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import logo from "../../../assets/logo.png";
 import { AnimatePresence, motion } from "motion/react";
 import { NavLink } from "react-router";
+import { CiLogin } from "react-icons/ci";
+import { RxCrossCircled } from "react-icons/rx";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,17 +13,13 @@ const Navbar = () => {
   return (
     <div className="bg-base-100 shadow-sm">
       <div className="navbar max-w-7xl mx-auto px-4">
-        {/* Navbar Start */}
         <div className="navbar-start" />
 
-        {/* Navbar Center Container */}
-        <div className="navbar-center bg-primary rounded-2xl px-4 py-2 flex items-center gap-4 shadow-lg">
-          {/* Logo */}
+        <div className="navbar-center bg-linear-to-r from-primary to-secondary/80 text-primary-content rounded-full px-2 pr-4 py-2 flex items-center gap-1 md:gap-2 shadow-2xl shadow-primary/50">
           <a className="btn btn-ghost hover:bg-primary/60">
             <img className="w-36" src={logo} alt="EtutionBD Logo" />
           </a>
 
-          {/* Animated Menu */}
           <AnimatePresence initial={false}>
             {isVisible && (
               <motion.div
@@ -32,18 +30,13 @@ const Navbar = () => {
                 transition={{ duration: 0.25 }}
                 className="flex items-center gap-4"
               >
-                {/* Tuitions */}
-                <div className="dropdown dropdown-hover">
-                  <div
-                    tabIndex={0}
-                    role="button"
-                    className="btn btn-ghost text-base-100"
-                  >
+                <div className="dropdown dropdown-hover hover:bg-accent rounded-full ">
+                  <NavLink tabIndex={0} role="button" className="btn btn-ghost">
                     Tuitions
-                  </div>
+                  </NavLink>
                   <ul
                     tabIndex="-1"
-                    className="dropdown-content menu bg-base-100 rounded-box w-52 shadow-md"
+                    className="dropdown-content menu bg-linear-to-r from-primary to-secondary rounded-box w-52 shadow-md"
                   >
                     <li>
                       <NavLink className="hover:bg-accent hover:text-base-100">
@@ -58,18 +51,17 @@ const Navbar = () => {
                   </ul>
                 </div>
 
-                {/* Tutors */}
-                <div className="dropdown dropdown-hover">
-                  <div
+                <div className="dropdown dropdown-hover hover:bg-accent rounded-full">
+                  <NavLink
                     tabIndex={0}
                     role="button"
-                    className="btn btn-ghost text-base-100"
+                    className="btn btn-ghost "
                   >
                     Tutors
-                  </div>
+                  </NavLink>
                   <ul
                     tabIndex="-1"
-                    className="dropdown-content menu bg-base-100 rounded-box w-52 shadow-md"
+                    className="dropdown-content menu bg-linear-to-r from-primary to-secondary rounded-box w-52 shadow-md"
                   >
                     <li>
                       <a className="hover:bg-accent hover:text-base-100">
@@ -84,11 +76,13 @@ const Navbar = () => {
                   </ul>
                 </div>
 
-                <NavLink className="btn btn-ghost text-base-100">About</NavLink>
-                <NavLink className="btn btn-ghost text-base-100">
+                <NavLink className="btn btn-ghost text-base-100 hover:bg-accent rounded-full">
+                  About
+                </NavLink>
+                <NavLink className="btn btn-ghost text-base-100 hover:bg-accent rounded-full">
                   Contact
                 </NavLink>
-                <NavLink className="btn btn-ghost text-base-100">
+                <NavLink className="btn btn-ghost text-base-100 hover:bg-accent rounded-full">
                   Lightmode
                 </NavLink>
               </motion.div>
@@ -99,13 +93,15 @@ const Navbar = () => {
           <motion.button
             onClick={() => setIsVisible(!isVisible)}
             whileTap={{ scale: 0.95 }}
-            className="btn btn-ghost text-base-100"
+            className="btn btn-ghost text-base-100 hover:bg-accent rounded-full text-lg"
           >
-            {isVisible ? "Close" : "Menu"}
+            {isVisible ? <RxCrossCircled size={26} /> : "Menu"}
           </motion.button>
 
           {/* Logout */}
-          <button className="btn btn-accent text-base-100 px-6">Logout</button>
+          <button className="btn border-0 bg-linear-to-r from-accent to-base-content/50 text-base-100 px-6 rounded-full">
+            <CiLogin size={26} /> Login
+          </button>
         </div>
 
         {/* Navbar end */}

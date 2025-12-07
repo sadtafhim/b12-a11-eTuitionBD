@@ -1,44 +1,78 @@
 @import "tailwindcss";
+
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
 @plugin "daisyui";
 @plugin "daisyui/theme" {
-  name: "mytheme-light";
+  name: "etuitionbd-light";
   default: true;
   color-scheme: light;
 
-  --color-primary: #5a55d9;
-  --color-accent: #f2b734;
-  /* BACKGROUNDS */
-  --color-base-100: #f8f9fc;
-  --color-base-200: #eff1f5;
-  --color-base-300: #e2e4e8;
-  /* TEXT */
-  --color-text: #1f2937;
-  --color-text-muted: #6b7280;
-  --color-text-on-primary: #ffffff;
-  --color-success: #10b981; /* Emerald green for correct answers */
-  --color-warning: #f59e0b; /* Amber for warnings */
-  --color-error: #ef4444; /* Red for incorrect answers */
-  --color-info: #3b82f6;
+  /* Core Brand Colors */
+  --color-primary: #5b3dcc;
+  --color-primary-focus: #4a2ea8;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #8a74e8;
+  --color-secondary-focus: #6c5bd4;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #f6b436;
+  --color-accent-focus: #e29a00;
+  --color-accent-content: #1a1a1a;
+
+  /* Neutrals */
+  --color-neutral: #1a1a33;
+  --color-neutral-focus: #141427;
+  --color-neutral-content: #f7f7fb;
+
+  /* Base Backgrounds */
+  --color-base-100: #f7f7fb;
+  --color-base-200: #f0eef7;
+  --color-base-300: #e3e0ef;
+  --color-base-content: #1a1a33;
+
+  /* Status Colors */
+  --color-info: #3abff8;
+  --color-success: #36d399;
+  --color-warning: #fbbd23;
+  --color-error: #f87272;
 }
 @plugin "daisyui/theme" {
-  name: "mytheme-dark";
+  name: "etuitionbd-dark";
   color-scheme: dark;
 
-  --color-primary: #3d3a91;
-  --color-accent: #f2b734;
+  /* BRAND COLORS */
+  --color-primary: #8a74e8; /* Softer, brighter purple for dark mode */
+  --color-primary-focus: #6c5bd4;
+  --color-primary-content: #ffffff;
+
+  --color-secondary: #5b3dcc;
+  --color-secondary-focus: #4a2ea8;
+  --color-secondary-content: #ffffff;
+
+  --color-accent: #f6b436;
+  --color-accent-focus: #e29a00;
+  --color-accent-content: #1a1a1a;
 
   /* BACKGROUNDS */
-  --color-base-100: #1a1b26;
-  --color-base-200: #242535;
-  --color-base-300: #37384a;
+  --color-base-100: #0f0f1a; /* Main page BG */
+  --color-base-200: #141425; /* Cards / surfaces */
+  --color-base-300: #1c1b2d; /* Hover / elevated */
 
   /* TEXT */
-  --color-text: #e5e7eb;
-  --color-text-muted: #9ca3af;
-  --color-text-on-primary: #ffffff;
+  --color-base-content: #eaecf3; /* Main text color */
+  --color-neutral-content: #bebee7; /* Muted text */
+  --color-text-on-primary: #ffffff; /* Button text */
 
-  --color-success: #059669;
-  --color-warning: #d97706;
-  --color-error: #dc2626;
-  --color-info: #2563eb;
+  /* STATUS COLORS */
+  --color-success: #36d399;
+  --color-warning: #fbbd23;
+  --color-error: #f87272;
+  --color-info: #3abff8;
+}
+
+* {
+  font-family: "Quicksand", sans-serif;
 }
