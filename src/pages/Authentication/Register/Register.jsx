@@ -105,7 +105,7 @@ const Register = () => {
                     message: "Invalid phone number format",
                   },
                 })}
-                className="input input-bordered w-full bg-[--color-base-200] text-[--color-base-content]"
+                className="input input-bordered w-full bg-base-200 text-base-content"
                 placeholder="e.g., +880 1XXXXXXXXX"
               />
               {errors.phone && (
@@ -127,9 +127,15 @@ const Register = () => {
                     value: 6,
                     message: "Password must be 6 characters or longer",
                   },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+                    message:
+                      "Must include 6+ chars, upper/lower case, number, and symbol.",
+                  },
                 })}
                 className="input input-bordered w-full bg-base-200 text-base-content"
-                placeholder="Minimum 6 characters"
+                placeholder="Password"
               />
               {errors.password && (
                 <p className="text-error text-sm mt-1">

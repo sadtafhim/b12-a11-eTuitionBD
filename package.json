@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@tailwindcss/vite": "^4.1.17",
     "cors": "^2.8.5",
+    "firebase": "^12.6.0",
     "motion": "^12.23.25",
     "react": "^19.2.0",
     "react-awesome-reveal": "^4.3.1",
