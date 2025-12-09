@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import logo from "../../../assets/logo.png";
 import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
+import useAuth from "../../../hooks/useAuth";
+import { Link } from "react-router";
 
 const Register = () => {
   const [selectedRole, setSelectedRole] = useState("student");
@@ -13,7 +15,14 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
+  const { registerUser } = useAuth();
+
   const handleRegistration = (data) => {
+    registerUser(data.email, data.password)
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((err) => console.log(err));
     const finalData = { ...data, role: selectedRole };
     console.log("Registration Data:", finalData);
 
@@ -153,12 +162,12 @@ const Register = () => {
 
             <div className="mt-4 text-center text-sm text-base-content opacity-80">
               Already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                to="/auth/login"
                 className="link link-hover text-primary font-medium"
               >
                 Login Here
-              </a>
+              </Link>
             </div>
           </form>
         </div>
