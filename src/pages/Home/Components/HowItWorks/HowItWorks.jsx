@@ -2,6 +2,7 @@ import React from "react";
 import { FaUserPlus, FaCheckCircle, FaLaptopCode } from "react-icons/fa"; // Using relevant icons
 
 const HowItWorks = () => {
+  
   return (
     <section className="bg-[--color-base-100] py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
