@@ -4,6 +4,7 @@ import logo from "../../../assets/logo.png";
 import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
+import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
   const [selectedRole, setSelectedRole] = useState("student");
@@ -15,7 +16,7 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const { registerUser } = useAuth();
+  const { registerUser, signInGoogle } = useAuth();
 
   const handleRegistration = (data) => {
     registerUser(data.email, data.password)
@@ -25,13 +26,16 @@ const Register = () => {
       .catch((err) => console.log(err));
     const finalData = { ...data, role: selectedRole };
     console.log("Registration Data:", finalData);
-
-    // --- Backend/Auth Integration Logic Goes Here ---
-    // 1. Firebase Authentication (Create User with Email/Password)
-    // 2. Save user profile (name, email, phone, role) to MongoDB
-    // ----------------------------------------------------
   };
-
+  const handleSignInWithGoogle = () => {
+    signInGoogle()
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center py-10">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl">
@@ -102,7 +106,7 @@ const Register = () => {
             </div>
 
             <div>
-              <label className="label text-[--color-base-content] font-medium font-body">
+              <label className="label text-base-content font-medium font-body">
                 Phone
               </label>
               <input
@@ -118,6 +122,22 @@ const Register = () => {
                 placeholder="e.g., +880 1XXXXXXXXX"
               />
               {errors.phone && (
+                <p className="text-error text-sm mt-1">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="label text-base-content font-medium font-body">
+                Image
+              </label>
+              <input
+                type="file"
+                className="file-input file-input-accent input-bordered w-full bg-base-200 text-base-content"
+                placeholder="image"
+                {...register("photo", { required: "Photo is Required" })}
+              />
+              {errors.photo && (
                 <p className="text-error text-sm mt-1">
                   {errors.phone.message}
                 </p>
@@ -158,6 +178,13 @@ const Register = () => {
               className="btn btn-accent mt-6 w-full font-heading text-accent-content shadow-md transition-transform hover:scale-[1.01]"
             >
               Register as {selectedRole.toUpperCase()}
+            </button>
+            <button
+              type="button"
+              onClick={handleSignInWithGoogle}
+              className="btn bg-white mt-1 w-full font-heading text-accent-content shadow-md transition-transform hover:scale-[1.01]"
+            >
+              <FcGoogle /> Login with Google
             </button>
 
             <div className="mt-4 text-center text-sm text-base-content opacity-80">

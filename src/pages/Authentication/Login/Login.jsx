@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import logo from "../../../assets/logo.png";
 import useAuth from "../../../hooks/useAuth";
 import { Link } from "react-router";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
   const {
@@ -11,7 +12,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const { signInUser } = useAuth();
+  const { signInUser, signInGoogle } = useAuth();
 
   const handleLogin = (data) => {
     console.log("Login Attempt Data:", data);
@@ -22,6 +23,16 @@ const Login = () => {
       })
       .catch((err) => {
         console.error("Login failed:", err);
+      });
+  };
+
+  const handleSignInWithGoogle = () => {
+    signInGoogle()
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -83,7 +94,13 @@ const Login = () => {
             >
               Login
             </button>
-
+            <button
+              type="button"
+              onClick={handleSignInWithGoogle}
+              className="btn bg-white mt-1 w-full font-heading text-accent-content shadow-md transition-transform hover:scale-[1.01]"
+            >
+              <FcGoogle /> Login with Google
+            </button>
             <div className="mt-4 text-center text-sm text-base-content opacity-80">
               Don't have an account?{" "}
               <Link

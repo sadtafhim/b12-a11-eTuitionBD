@@ -3,12 +3,20 @@
 import React, { useState } from "react";
 import logo from "../../../assets/logo.png";
 import { AnimatePresence, motion } from "motion/react";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
 import { CiLogin } from "react-icons/ci";
 import { RxCrossCircled } from "react-icons/rx";
+import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { user, logOut } = useAuth();
+
+  const handleLogout = () => {
+    logOut()
+      .then(() => {})
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="bg-base-100 shadow-sm">
@@ -56,11 +64,73 @@ const Navbar = () => {
           >
             {isVisible ? <RxCrossCircled size={26} /> : "Menu"}
           </motion.button>
+          <div className="flex items-center gap-4">
+            {user ? (
+              // --- LOGGED IN STATE ---
+              <div className="flex items-center gap-3">
+                <NavLink
+                  to="/dashboard"
+                  className="hidden md:flex btn btn-ghost btn-sm font-heading"
+                >
+                  Dashboard
+                </NavLink>
+
+                {/* Profile Dropdown */}
+                <div className="dropdown dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-ghost btn-circle avatar border-2 border-primary"
+                  >
+                    <div className="w-10 rounded-full">
+                      {user?.photoURL ? (
+                        <img src={user?.photoURL} alt="User Profile" />
+                      ) : (
+                        <FaUserCircle className="w-full h-full text-primary" />
+                      )}
+                    </div>
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow-2xl border border-base-300"
+                  >
+                    <li className="px-4 py-2 font-bold text-primary border-b border-base-200 mb-2">
+                      {user?.displayName || "User"}
+                    </li>
+                    <li>
+                      <Link to="/dashboard/profile">View Profile</Link>
+                    </li>
+                    <li>
+                      <Link to="/dashboard">My Lessons</Link>
+                    </li>
+                    <li className="mt-2 pt-2 border-t border--base-200">
+                      <button
+                        onClick={handleLogout}
+                        className="text-error font-semibold"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              // --- LOGGED OUT STATE ---
+              <div className="flex items-center gap-2">
+                <NavLink
+                  to="/auth/login"
+                  className="btn border-0 bg-linear-to-r from-accent to-primary text-white px-6 rounded-full hover:scale-105 transition-transform"
+                >
+                  <CiLogin size={26} /> Login
+                </NavLink>
+              </div>
+            )}
+          </div>
           <NavLink
-            to="/auth/login"
-            className="btn border-0 bg-linear-to-r from-accent to-base-content/50 text-base-100 px-6 rounded-full"
+            to="/auth/register"
+            className="hidden sm:flex btn btn-primary rounded-full px-6"
           >
-            <CiLogin size={26} /> Login
+            Become a Tutor
           </NavLink>
         </div>
         <div className="navbar-end" />
