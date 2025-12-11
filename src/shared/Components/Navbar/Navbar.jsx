@@ -7,6 +7,7 @@ import { Link, NavLink } from "react-router";
 import { CiLogin } from "react-icons/ci";
 import { RxCrossCircled } from "react-icons/rx";
 import useAuth from "../../../hooks/useAuth";
+import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(false);

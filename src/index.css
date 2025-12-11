@@ -76,3 +76,7 @@
 * {
   font-family: "Quicksand", sans-serif;
 }
+
+.active {
+  text-decoration: underline;
+}

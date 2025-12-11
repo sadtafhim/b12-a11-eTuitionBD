@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import logo from "../../../assets/logo.png";
 import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import useAuth from "../../../hooks/useAuth";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
 
 const Register = () => {
   const [selectedRole, setSelectedRole] = useState("student");
@@ -15,13 +16,36 @@ const Register = () => {
     watch,
     formState: { errors },
   } = useForm();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const { registerUser, signInGoogle } = useAuth();
+  const { registerUser, signInGoogle, updateUserProfile } = useAuth();
 
   const handleRegistration = (data) => {
+    const profileImg = data.photo[0];
+
     registerUser(data.email, data.password)
       .then((result) => {
         console.log(result.user);
+        const formData = new FormData();
+        formData.append("image", profileImg);
+        axios
+          .post(
+            `https://api.imgbb.com/1/upload?key=${
+              import.meta.env.VITE_image_host
+            }`,
+            formData
+          )
+          .then((res) => {
+            console.log("after image upload", res);
+            const userProfile = {
+              displayName: data.name,
+              photoURL: res.data.data.url,
+            };
+            updateUserProfile(userProfile)
+              .then(navigate(location.state || "/"))
+              .catch((err) => console.log(err));
+          });
       })
       .catch((err) => console.log(err));
     const finalData = { ...data, role: selectedRole };
@@ -31,6 +55,7 @@ const Register = () => {
     signInGoogle()
       .then((result) => {
         console.log(result.user);
+        navigate(location.state || "/");
       })
       .catch((error) => {
         console.log(error);

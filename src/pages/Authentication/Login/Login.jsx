@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import logo from "../../../assets/logo.png";
 import useAuth from "../../../hooks/useAuth";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
@@ -12,6 +12,9 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { signInUser, signInGoogle } = useAuth();
 
   const handleLogin = (data) => {
@@ -20,6 +23,7 @@ const Login = () => {
     signInUser(data.email, data.password)
       .then((result) => {
         console.log("Login successful:", result.user);
+        navigate(location?.state || "/");
       })
       .catch((err) => {
         console.error("Login failed:", err);
@@ -30,6 +34,7 @@ const Login = () => {
     signInGoogle()
       .then((result) => {
         console.log(result.user);
+        navigate(location?.state || "/");
       })
       .catch((error) => {
         console.log(error);
@@ -104,6 +109,7 @@ const Login = () => {
             <div className="mt-4 text-center text-sm text-base-content opacity-80">
               Don't have an account?{" "}
               <Link
+                state={location.state}
                 to="/auth/register"
                 className="link link-hover text-primary font-medium"
               >
