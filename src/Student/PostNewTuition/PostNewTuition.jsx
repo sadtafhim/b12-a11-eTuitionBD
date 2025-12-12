@@ -7,6 +7,9 @@ import {
   FaMapMarkerAlt,
   FaBookOpen,
 } from "react-icons/fa";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useAuth from "../../hooks/useAuth";
 
 const subjects = [
   "Mathematics",
@@ -141,6 +144,9 @@ const daysPerWeekOptions = [
 ];
 
 const PostNewTuition = () => {
+  const { user, loading } = useAuth();
+  console.log(user);
+
   const {
     register,
     handleSubmit,
@@ -148,6 +154,8 @@ const PostNewTuition = () => {
     reset,
     watch,
   } = useForm();
+
+  const axiosSecure = useAxiosSecure();
 
   const districtByDivision = (division) => {
     const districtsOfDivision = districts[division];
@@ -157,9 +165,32 @@ const PostNewTuition = () => {
   const userDivision = watch("division");
 
   const handlePostTuition = (data) => {
-    console.log(data);
-    reset();
+    Swal.fire({
+      title: "Proceed With Positing?",
+      text: "Your tuition posting would be available to our admins for approval!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, post it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosSecure.post("/tuitions", data).then((res) => {
+          Swal.fire({
+            title: "Submitted",
+            text: "Your Tuition Has Been Submitted",
+            icon: "success",
+          });
+        });
+        reset();
+        console.log(data);
+      }
+    });
   };
+
+  if (loading) {
+    return <span className="loading loading-ring loading-xl"></span>;
+  }
 
   return (
     <div className="min-h-screen bg-base-100 py-10">
@@ -177,6 +208,29 @@ const PostNewTuition = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit(handlePostTuition)} className="space-y-6">
+          <div>
+            {/* email */}
+            <div>
+              <label className="label text-base-content font-medium flex items-center gap-2">
+                <FaBookOpen className="text-sm text-accent" /> email
+              </label>
+              <input
+                type="email"
+                {...register("email", {
+                  required: "email is required",
+                })}
+                defaultValue={user.email}
+                readOnly
+                className="input input-bordered w-full bg-base-100 text-base-content"
+                placeholder="e.g., 5000 (BDT)"
+              />
+              {errors.subject && (
+                <p className="text-error text-sm mt-1">
+                  {errors.subject.message}
+                </p>
+              )}
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Subject */}
             <div>

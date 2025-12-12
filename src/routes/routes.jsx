@@ -8,6 +8,8 @@ import AuthLayout from "../layouts/AuthLayout/AuthLayout";
 import Login from "../pages/Authentication/Login/Login";
 import Register from "../pages/Authentication/Register/Register";
 import PostNewTuition from "../Student/PostNewTuition/PostNewTuition";
+import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
+import PrivateRoutes from "./PrivateRoutes";
 
 const router = createBrowserRouter([
   {
@@ -27,10 +29,6 @@ const router = createBrowserRouter([
         path: "/contacts",
         element: <Contacts></Contacts>,
       },
-      {
-        path: "/post-new-tution",
-        element: <PostNewTuition></PostNewTuition>,
-      },
     ],
   },
   {
@@ -45,6 +43,21 @@ const router = createBrowserRouter([
       {
         path: "/auth/register",
         element: <Register></Register>,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoutes>
+    ),
+    errorElement: <div>404 not found</div>,
+    children: [
+      {
+        path: "/dashboard/post-new-tution",
+        element: <PostNewTuition></PostNewTuition>,
       },
     ],
   },
