@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   FaGraduationCap,
@@ -40,14 +40,96 @@ const classes = [
   "University Level",
   "Test Prep (SAT/IELTS)",
 ];
-const locations = [
-  "Online Only",
-  "Dhaka (North)",
-  "Dhaka (South)",
-  "Chittagong",
-  "Sylhet",
+const divisions = [
+  "Dhaka",
+  "Chattogram",
   "Rajshahi",
+  "Khulna",
+  "Barishal",
+  "Sylhet",
+  "Rangpur",
+  "Mymensingh",
 ];
+
+const districts = {
+  Dhaka: [
+    "Dhaka",
+    "Gazipur",
+    "Kishoreganj",
+    "Manikganj",
+    "Munshiganj",
+    "Narayanganj",
+    "Narsingdi",
+    "Tangail",
+    "Faridpur",
+    "Gopalganj",
+    "Madaripur",
+    "Rajbari",
+    "Shariatpur",
+  ],
+
+  Chattogram: [
+    "Chattogram",
+    "Cox's Bazar",
+    "Cumilla",
+    "Brahmanbaria",
+    "Chandpur",
+    "Feni",
+    "Laxmipur",
+    "Noakhali",
+    "Khagrachhari",
+    "Rangamati",
+    "Bandarban",
+  ],
+
+  Rajshahi: [
+    "Rajshahi",
+    "Natore",
+    "Naogaon",
+    "Chapainawabganj",
+    "Pabna",
+    "Sirajganj",
+    "Bogura",
+    "Joypurhat",
+  ],
+
+  Khulna: [
+    "Khulna",
+    "Jessore",
+    "Jhenaidah",
+    "Magura",
+    "Narail",
+    "Bagerhat",
+    "Satkhira",
+    "Kushtia",
+    "Chuadanga",
+    "Meherpur",
+  ],
+
+  Barishal: [
+    "Barishal",
+    "Patuakhali",
+    "Pirojpur",
+    "Bhola",
+    "Jhalokathi",
+    "Barguna",
+  ],
+
+  Sylhet: ["Sylhet", "Moulvibazar", "Habiganj", "Sunamganj"],
+
+  Rangpur: [
+    "Rangpur",
+    "Dinajpur",
+    "Gaibandha",
+    "Kurigram",
+    "Lalmonirhat",
+    "Nilphamari",
+    "Panchagarh",
+    "Thakurgaon",
+  ],
+
+  Mymensingh: ["Mymensingh", "Jamalpur", "Netrokona", "Sherpur"],
+};
 const daysPerWeekOptions = [
   "1 day/week",
   "2 days/week",
@@ -64,7 +146,15 @@ const PostNewTuition = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm();
+
+  const districtByDivision = (division) => {
+    const districtsOfDivision = districts[division];
+    return districtsOfDivision;
+  };
+
+  const userDivision = watch("division");
 
   const handlePostTuition = (data) => {
     console.log(data);
@@ -138,18 +228,17 @@ const PostNewTuition = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Location */}
+            {/* Division */}
             <div>
               <label className="label text-base-content font-medium flex items-center gap-2">
-                <FaMapMarkerAlt className="text-sm text-accent" />{" "}
-                Location/Medium
+                <FaMapMarkerAlt className="text-sm text-accent" /> Division
               </label>
               <select
-                {...register("location", { required: "Location is required" })}
+                {...register("division", { required: "Division is required" })}
                 className="select select-bordered w-full bg-base-100 text-base-content"
               >
-                <option value="">Select Location Preference</option>
-                {locations.map((l) => (
+                <option value="">Select Division</option>
+                {divisions.map((l) => (
                   <option key={l} value={l}>
                     {l}
                   </option>
@@ -162,10 +251,37 @@ const PostNewTuition = () => {
               )}
             </div>
 
+            {/* District */}
+            <div>
+              <label className="label text-base-content font-medium flex items-center gap-2">
+                <FaClock className="text-sm text-accent" /> District
+              </label>
+              <select
+                {...register("district", {
+                  required: "District week is required",
+                })}
+                className="select select-bordered w-full bg-base-100 text-base-content"
+              >
+                <option value="">Select District</option>
+                {(districtByDivision(userDivision) || []).map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+              {errors.daysPerWeek && (
+                <p className="text-error text-sm mt-1">
+                  {errors.daysPerWeek.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Days per Week */}
             <div>
               <label className="label text-base-content font-medium flex items-center gap-2">
-                <FaClock className="text-sm" /> Days/Week
+                <FaClock className="text-sm text-accent" /> Days/Week
               </label>
               <select
                 {...register("daysPerWeek", {
@@ -186,28 +302,30 @@ const PostNewTuition = () => {
                 </p>
               )}
             </div>
+            {/* Budget */}
+            <div>
+              <label className="label text-base-content font-medium flex items-center gap-2">
+                <FaDollarSign className="text-sm text-accent" /> Monthly Budget
+                (BDT)
+              </label>
+              <input
+                type="number"
+                {...register("budget", {
+                  required: "Budget is required",
+                  min: { value: 500, message: "Minimum budget is 500 BDT" },
+                })}
+                className="input input-bordered w-full bg-base-100 text-base-content"
+                placeholder="e.g., 5000 (BDT)"
+              />
+              {errors.budget && (
+                <p className="text-error text-sm mt-1">
+                  {errors.budget.message}
+                </p>
+              )}
+            </div>
           </div>
 
-          {/* Budget */}
-          <div>
-            <label className="label text-base-content font-medium flex items-center gap-2">
-              <FaDollarSign className="text-sm" /> Monthly Budget (BDT)
-            </label>
-            <input
-              type="number"
-              {...register("budget", {
-                required: "Budget is required",
-                min: { value: 500, message: "Minimum budget is 500 BDT" },
-              })}
-              className="input input-bordered w-full bg-base-100 text-base-content"
-              placeholder="e.g., 5000 (BDT)"
-            />
-            {errors.budget && (
-              <p className="text-error text-sm mt-1">{errors.budget.message}</p>
-            )}
-          </div>
-
-          {/* Description */}
+          {/*  Description */}
           <div>
             <label className="label text-base-content font-medium">
               Detailed Requirements
