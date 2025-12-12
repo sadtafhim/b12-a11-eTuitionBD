@@ -7,6 +7,7 @@ import Contacts from "../pages/Contacts/Contacts";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout";
 import Login from "../pages/Authentication/Login/Login";
 import Register from "../pages/Authentication/Register/Register";
+import PostNewTuition from "../Student/PostNewTuition/PostNewTuition";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/contacts",
         element: <Contacts></Contacts>,
+      },
+      {
+        path: "/post-new-tution",
+        element: <PostNewTuition></PostNewTuition>,
       },
     ],
   },
