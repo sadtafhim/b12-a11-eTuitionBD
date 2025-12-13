@@ -19,7 +19,7 @@ const studentNavLinks = [
     label: "My Tuitions",
   },
   {
-    path: "/dashboard/post-new-tution",
+    path: "/dashboard/post-new-tuition",
     icon: FaPenSquare,
     label: "Post New Tuition",
   },

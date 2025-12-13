@@ -10,6 +10,7 @@ import Register from "../pages/Authentication/Register/Register";
 import PostNewTuition from "../Student/PostNewTuition/PostNewTuition";
 import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 import PrivateRoutes from "./PrivateRoutes";
+import MyTuitions from "../Student/MyTuitions/MyTuitions";
 
 const router = createBrowserRouter([
   {
@@ -56,8 +57,12 @@ const router = createBrowserRouter([
     errorElement: <div>404 not found</div>,
     children: [
       {
-        path: "/dashboard/post-new-tution",
+        path: "/dashboard/post-new-tuition",
         element: <PostNewTuition></PostNewTuition>,
+      },
+      {
+        path: "/dashboard/my-tuitions",
+        element: <MyTuitions></MyTuitions>,
       },
     ],
   },
