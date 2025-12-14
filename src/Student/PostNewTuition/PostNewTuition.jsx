@@ -145,7 +145,6 @@ const daysPerWeekOptions = [
 
 const PostNewTuition = () => {
   const { user, loading } = useAuth();
-  console.log(user);
 
   const {
     register,
@@ -165,6 +164,11 @@ const PostNewTuition = () => {
   const userDivision = watch("division");
 
   const handlePostTuition = (data) => {
+    const updatedData = {
+      ...data,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+    };
     Swal.fire({
       title: "Proceed With Positing?",
       text: "Your tuition posting would be available to our admins for approval!",
@@ -175,7 +179,7 @@ const PostNewTuition = () => {
       confirmButtonText: "Yes, post it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure.post("/tuitions", data).then((res) => {
+        axiosSecure.post("/tuitions", updatedData).then((res) => {
           Swal.fire({
             title: "Submitted",
             text: "Your Tuition Has Been Submitted",
