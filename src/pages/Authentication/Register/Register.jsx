@@ -1,74 +1,90 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import logo from "../../../assets/logo.png";
-import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
-import useAuth from "../../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router";
+import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
 
+import logo from "../../../assets/logo.png";
+import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+
 const Register = () => {
   const [selectedRole, setSelectedRole] = useState("student");
-
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
   const location = useLocation();
   const navigate = useNavigate();
-
+  const axiosSecure = useAxiosSecure();
   const { registerUser, signInGoogle, updateUserProfile } = useAuth();
 
-  const handleRegistration = (data) => {
-    const profileImg = data.photo[0];
+  const handleRegistration = async (data) => {
+    try {
+      const profileImg = data.photo[0];
 
-    registerUser(data.email, data.password)
-      .then((result) => {
-        console.log(result.user);
-        const formData = new FormData();
-        formData.append("image", profileImg);
-        axios
-          .post(
-            `https://api.imgbb.com/1/upload?key=${
-              import.meta.env.VITE_image_host
-            }`,
-            formData
-          )
-          .then((res) => {
-            console.log("after image upload", res);
-            const userProfile = {
-              displayName: data.name,
-              photoURL: res.data.data.url,
-            };
-            updateUserProfile(userProfile)
-              .then(navigate(location.state || "/"))
-              .catch((err) => console.log(err));
-          });
-      })
-      .catch((err) => console.log(err));
-    const finalData = { ...data, role: selectedRole };
-    console.log("Registration Data:", finalData);
+      const result = await registerUser(data.email, data.password);
+
+      const formData = new FormData();
+      formData.append("image", profileImg);
+      const imgRes = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
+        formData
+      );
+      const photoURL = imgRes.data.data.url;
+
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL,
+      });
+
+      const userInfo = {
+        email: data.email,
+        displayName: data.name,
+        photoURL,
+        role: selectedRole,
+      };
+
+      const res = await axiosSecure.post("/users", userInfo);
+      if (res.data.insertedId) console.log("User created in DB");
+
+      navigate(location.state || "/");
+    } catch (err) {
+      console.error("Registration error:", err);
+    }
   };
+
   const handleSignInWithGoogle = () => {
     signInGoogle()
       .then((result) => {
         console.log(result.user);
-        navigate(location.state || "/");
+
+        const userInfo = {
+          email: result.user.email,
+          displayName: result.user.name,
+          photoURL: result.user.photoURL,
+        };
+
+        axiosSecure.post("users", userInfo).then((res) => {
+          console.log("user data has been stored", res.data);
+          navigate(location?.state || "/");
+        });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.error(error));
   };
+
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center py-10">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl">
+        {/* Form Side */}
         <div className="w-full lg:w-1/2 p-8 md:p-12 bg-base-100 flex flex-col justify-center">
           <h2 className="text-3xl font-heading font-bold text-base-content mb-6 text-center">
             Create Your Account
           </h2>
 
+          {/* Role selection */}
           <div className="flex justify-around gap-4 mb-8">
             <button
               type="button"
@@ -94,10 +110,12 @@ const Register = () => {
             </button>
           </div>
 
+          {/* Form */}
           <form
             onSubmit={handleSubmit(handleRegistration)}
             className="space-y-4"
           >
+            {/* Name */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Name
@@ -113,6 +131,7 @@ const Register = () => {
               )}
             </div>
 
+            {/* Email */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Email
@@ -130,6 +149,7 @@ const Register = () => {
               )}
             </div>
 
+            {/* Phone */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Phone
@@ -152,23 +172,25 @@ const Register = () => {
                 </p>
               )}
             </div>
+
+            {/* Image */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Image
               </label>
               <input
                 type="file"
+                {...register("photo", { required: "Photo is required" })}
                 className="file-input file-input-accent input-bordered w-full bg-base-200 text-base-content"
-                placeholder="image"
-                {...register("photo", { required: "Photo is Required" })}
               />
               {errors.photo && (
                 <p className="text-error text-sm mt-1">
-                  {errors.phone.message}
+                  {errors.photo.message}
                 </p>
               )}
             </div>
 
+            {/* Password */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Password
@@ -198,6 +220,7 @@ const Register = () => {
               )}
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
               className="btn btn-accent mt-6 w-full font-heading text-accent-content shadow-md transition-transform hover:scale-[1.01]"
@@ -224,6 +247,7 @@ const Register = () => {
           </form>
         </div>
 
+        {/* Right Side Info */}
         <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center items-center p-12 bg-primary text-primary-content">
           <img src={logo} alt="eTuitionBd Logo" className="w-48 mb-6" />
           <h3 className="text-3xl font-heading font-bold text-center mb-4">

@@ -4,6 +4,7 @@ import logo from "../../../assets/logo.png";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Login = () => {
   const {
@@ -16,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const { signInUser, signInGoogle } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
   const handleLogin = (data) => {
     console.log("Login Attempt Data:", data);
@@ -34,7 +36,17 @@ const Login = () => {
     signInGoogle()
       .then((result) => {
         console.log(result.user);
-        navigate(location?.state || "/");
+
+        const userInfo = {
+          email: result.user.email,
+          displayName: result.user.name,
+          photoURL: result.user.photoURL,
+        };
+
+        axiosSecure.post("users", userInfo).then((res) => {
+          console.log("user data has been stored", res.data);
+          navigate(location?.state || "/");
+        });
       })
       .catch((error) => {
         console.log(error);
