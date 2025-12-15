@@ -1,6 +1,7 @@
 import React from "react";
 import useAuth from "../hooks/useAuth";
 import { Navigate, useLocation } from "react-router";
+import LoadingSpinner from "../shared/Components/LoadingSpinner/LoadingSpinner";
 
 const PrivateRoutes = ({ children }) => {
   const { user, loading } = useAuth();
@@ -9,8 +10,8 @@ const PrivateRoutes = ({ children }) => {
 
   if (loading) {
     return (
-      <div>
-        <span className="loading loading-spinner text-accent"></span>;
+      <div className="h-screen flex justify-center items-center">
+        <LoadingSpinner></LoadingSpinner>
       </div>
     );
   }

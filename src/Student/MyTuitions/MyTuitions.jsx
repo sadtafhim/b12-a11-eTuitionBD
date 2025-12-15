@@ -10,12 +10,14 @@ import {
   FaMapMarkerAlt,
   FaDollarSign,
 } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../../shared/Components/LoadingSpinner/LoadingSpinner";
 
 const MyTuitions = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
 
   const {
     data: tuitions = [],
@@ -67,14 +69,13 @@ const MyTuitions = () => {
   };
 
   const handleEdit = (id) => {
-    // Example: navigate(`/dashboard/edit-tuition/${id}`);
-    console.log("Edit action initiated for ID:", id);
+    navigate(`/dashboard/edit-tuition/${id}`);
   };
 
   if (isLoading) {
     return (
-      <div className="text-center py-10">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
+      <div className="h-screen flex justify-center items-center">
+        <LoadingSpinner></LoadingSpinner>
       </div>
     );
   }

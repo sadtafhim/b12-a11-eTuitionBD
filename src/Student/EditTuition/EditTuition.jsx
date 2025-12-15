@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import {
   FaGraduationCap,
   FaDollarSign,
@@ -11,6 +12,7 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import LoadingSpinner from "../../shared/Components/LoadingSpinner/LoadingSpinner";
+import { useNavigate, useParams } from "react-router";
 
 const subjects = [
   "Mathematics",
@@ -44,6 +46,15 @@ const classes = [
   "University Level",
   "Test Prep (SAT/IELTS)",
 ];
+const daysPerWeekOptions = [
+  "1 day/week",
+  "2 days/week",
+  "3 days/week",
+  "4 days/week",
+  "5 days/week",
+  "6 days/week",
+  "7 days/week",
+];
 const divisions = [
   "Dhaka",
   "Chattogram",
@@ -54,7 +65,6 @@ const divisions = [
   "Rangpur",
   "Mymensingh",
 ];
-
 const districts = {
   Dhaka: [
     "Dhaka",
@@ -71,7 +81,6 @@ const districts = {
     "Rajbari",
     "Shariatpur",
   ],
-
   Chattogram: [
     "Chattogram",
     "Cox's Bazar",
@@ -85,7 +94,6 @@ const districts = {
     "Rangamati",
     "Bandarban",
   ],
-
   Rajshahi: [
     "Rajshahi",
     "Natore",
@@ -96,7 +104,6 @@ const districts = {
     "Bogura",
     "Joypurhat",
   ],
-
   Khulna: [
     "Khulna",
     "Jessore",
@@ -109,7 +116,6 @@ const districts = {
     "Chuadanga",
     "Meherpur",
   ],
-
   Barishal: [
     "Barishal",
     "Patuakhali",
@@ -118,9 +124,7 @@ const districts = {
     "Jhalokathi",
     "Barguna",
   ],
-
   Sylhet: ["Sylhet", "Moulvibazar", "Habiganj", "Sunamganj"],
-
   Rangpur: [
     "Rangpur",
     "Dinajpur",
@@ -131,21 +135,29 @@ const districts = {
     "Panchagarh",
     "Thakurgaon",
   ],
-
   Mymensingh: ["Mymensingh", "Jamalpur", "Netrokona", "Sherpur"],
 };
-const daysPerWeekOptions = [
-  "1 day/week",
-  "2 days/week",
-  "3 days/week",
-  "4 days/week",
-  "5 days/week",
-  "6 days/week",
-  "7 days/week",
-];
+// --------------------------------------------------------------------------
 
-const PostNewTuition = () => {
-  const { user, loading } = useAuth();
+const EditTuition = () => {
+  const { user, loading: authLoading } = useAuth();
+  const { id } = useParams();
+  const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
+
+  const {
+    data: tuitionData,
+    isLoading: queryLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["tuition", id],
+    queryFn: async () => {
+      if (!id) return null;
+      const res = await axiosSecure.get(`/tuitions/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
+  });
 
   const {
     register,
@@ -155,89 +167,128 @@ const PostNewTuition = () => {
     watch,
   } = useForm();
 
-  const axiosSecure = useAxiosSecure();
+  const watchedDivision = watch("division");
+
+  useEffect(() => {
+    if (tuitionData) {
+      reset(tuitionData);
+    }
+  }, [tuitionData, reset]);
 
   const districtByDivision = (division) => {
     const districtsOfDivision = districts[division];
     return districtsOfDivision;
   };
 
-  const userDivision = watch("division");
+  // FIX: Use initial data if available, otherwise use live watch
+  const activeDivision = tuitionData?.division || watchedDivision;
 
-  const handlePostTuition = (data) => {
+  const handleUpdateTuition = (data) => {
     const updatedData = {
-      ...data,
-      status: "pending",
-      createdAt: new Date().toISOString(),
+      subject: data.subject,
+      classLevel: data.classLevel,
+      division: data.division,
+      district: data.district,
+      daysPerWeek: data.daysPerWeek,
+      budget: data.budget,
+      description: data.description,
     };
+
     Swal.fire({
-      title: "Proceed With Positing?",
-      text: "Your tuition posting would be available to our admins for approval!",
+      title: "Confirm Update?",
+      text: "This modification will reset the status to 'pending' and require re-approval.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, post it!",
+      confirmButtonText: "Yes, Update it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure.post("/tuitions", updatedData).then((res) => {
-          Swal.fire({
-            title: "Submitted",
-            text: "Your Tuition Has Been Submitted",
-            icon: "success",
+        axiosSecure
+          .patch(`/tuitions/${id}`, updatedData)
+          .then((res) => {
+            if (res.data.modifiedCount > 0) {
+              Swal.fire({
+                title: "Updated!",
+                text: "Your Tuition Post has been updated and sent for review.",
+                icon: "success",
+              });
+              navigate("/dashboard/my-tuitions");
+            } else {
+              Swal.fire({
+                title: "No Changes",
+                text: "No new modifications were detected.",
+                icon: "info",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Update error:", error);
+            Swal.fire(
+              "Error",
+              "Failed to update tuition. Check network or server logs.",
+              "error"
+            );
           });
-        });
-        reset();
-        console.log(data);
       }
     });
   };
 
-  if (loading) {
-    <div className="h-screen flex justify-center items-center">
-      <LoadingSpinner></LoadingSpinner>
-    </div>;
+  if (authLoading || queryLoading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (isError || !tuitionData) {
+    return (
+      <div className="text-center py-20 text-error">
+        <h2 className="text-2xl">
+          Error loading tuition data. Please check the ID or network connection.
+        </h2>
+        <button
+          onClick={() => navigate("/dashboard/my-tuitions")}
+          className="btn btn-primary mt-4"
+        >
+          Go Back
+        </button>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-base-100 py-10">
       <div className="max-w-4xl mx-auto p-6 md:p-10 bg-base-200 rounded-xl shadow-2xl">
-        {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-heading font-extrabold text-primary mb-2">
-            Create New Tuition Request
+            Edit Tuition Request
           </h1>
           <p className="text-base-content opacity-70">
-            Fill out the details below to publish your request and find the
-            perfect tutor.
+            Modify the details for tuition ID: **{id}**.
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit(handlePostTuition)} className="space-y-6">
+        <form
+          onSubmit={handleSubmit(handleUpdateTuition)}
+          className="space-y-6"
+        >
+          {/* Email field (Read Only) */}
           <div>
-            {/* email */}
-            <div>
-              <label className="label text-base-content font-medium flex items-center gap-2">
-                <FaBookOpen className="text-sm text-accent" /> email
-              </label>
-              <input
-                type="email"
-                {...register("email", {
-                  required: "email is required",
-                })}
-                defaultValue={user.email}
-                readOnly
-                className="input input-bordered w-full bg-base-100 text-base-content"
-                placeholder="e.g., 5000 (BDT)"
-              />
-              {errors.subject && (
-                <p className="text-error text-sm mt-1">
-                  {errors.subject.message}
-                </p>
-              )}
-            </div>
+            <label className="label text-base-content font-medium flex items-center gap-2">
+              <FaBookOpen className="text-sm text-accent" /> Email
+            </label>
+            <input
+              type="email"
+              {...register("email")}
+              defaultValue={user.email}
+              readOnly
+              className="input input-bordered w-full bg-base-100 text-base-content"
+            />
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Subject */}
             <div>
@@ -305,34 +356,35 @@ const PostNewTuition = () => {
                   </option>
                 ))}
               </select>
-              {errors.location && (
+              {errors.division && (
                 <p className="text-error text-sm mt-1">
-                  {errors.location.message}
+                  {errors.division.message}
                 </p>
               )}
             </div>
 
-            {/* District */}
+            {/* District (Uses activeDivision for dynamic options) */}
             <div>
               <label className="label text-base-content font-medium flex items-center gap-2">
-                <FaClock className="text-sm text-accent" /> District
+                <FaMapMarkerAlt className="text-sm text-accent" /> District
               </label>
               <select
                 {...register("district", {
-                  required: "District week is required",
+                  required: "District is required",
                 })}
                 className="select select-bordered w-full bg-base-100 text-base-content"
               >
                 <option value="">Select District</option>
-                {(districtByDivision(userDivision) || []).map((d) => (
+                {/* Use the calculated activeDivision to render options */}
+                {(districtByDivision(activeDivision) || []).map((d) => (
                   <option key={d} value={d}>
                     {d}
                   </option>
                 ))}
               </select>
-              {errors.daysPerWeek && (
+              {errors.district && (
                 <p className="text-error text-sm mt-1">
-                  {errors.daysPerWeek.message}
+                  {errors.district.message}
                 </p>
               )}
             </div>
@@ -386,7 +438,7 @@ const PostNewTuition = () => {
             </div>
           </div>
 
-          {/*  Description */}
+          {/* Detailed Requirements */}
           <div>
             <label className="label text-base-content font-medium">
               Detailed Requirements
@@ -413,9 +465,9 @@ const PostNewTuition = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="btn btn-primary btn-lg w-full font-heading text-primary-content shadow-md mt-8 transition-transform hover:scale-[1.005]"
+            className="btn btn-warning btn-lg w-full font-heading text-primary-content shadow-md mt-8 transition-transform hover:scale-[1.005]"
           >
-            Post Tuition Request
+            Update Tuition Request
           </button>
         </form>
       </div>
@@ -423,4 +475,4 @@ const PostNewTuition = () => {
   );
 };
 
-export default PostNewTuition;
+export default EditTuition;

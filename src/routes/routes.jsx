@@ -11,6 +11,7 @@ import PostNewTuition from "../Student/PostNewTuition/PostNewTuition";
 import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 import PrivateRoutes from "./PrivateRoutes";
 import MyTuitions from "../Student/MyTuitions/MyTuitions";
+import EditTuition from "../Student/EditTuition/EditTuition";
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/my-tuitions",
         element: <MyTuitions></MyTuitions>,
+      },
+      {
+        path: "/dashboard/edit-tuition/:id",
+        element: <EditTuition></EditTuition>,
       },
     ],
   },
