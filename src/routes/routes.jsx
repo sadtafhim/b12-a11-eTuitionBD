@@ -12,12 +12,13 @@ import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 import PrivateRoutes from "./PrivateRoutes";
 import MyTuitions from "../Student/MyTuitions/MyTuitions";
 import EditTuition from "../Student/EditTuition/EditTuition";
+import ErrorPage from "../shared/Components/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout></HomeLayout>,
-    errorElement: <div>404 not found</div>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "/",
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
   {
     path: "/auth",
     element: <AuthLayout></AuthLayout>,
-    errorElement: <div>404 not found</div>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "/auth/login",
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
         <DashboardLayout></DashboardLayout>
       </PrivateRoutes>
     ),
-    errorElement: <div>404 not found</div>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "/dashboard/post-new-tuition",
