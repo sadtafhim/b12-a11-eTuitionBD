@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router";
 import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
@@ -8,6 +7,7 @@ import axios from "axios";
 import logo from "../../../assets/logo.png";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { Link, useLocation, useNavigate } from "react-router";
 
 const Register = () => {
   const [selectedRole, setSelectedRole] = useState("student");
@@ -25,8 +25,10 @@ const Register = () => {
     try {
       const profileImg = data.photo[0];
 
+      // 1. Register user with Firebase Auth
       const result = await registerUser(data.email, data.password);
 
+      // 2. Upload image to ImgBB
       const formData = new FormData();
       formData.append("image", profileImg);
       const imgRes = await axios.post(
@@ -35,11 +37,13 @@ const Register = () => {
       );
       const photoURL = imgRes.data.data.url;
 
+      // 3. Update Firebase profile
       await updateUserProfile({
         displayName: data.name,
         photoURL,
       });
 
+      // 4. Save user in your backend
       const userInfo = {
         email: data.email,
         displayName: data.name,
@@ -50,6 +54,7 @@ const Register = () => {
       const res = await axiosSecure.post("/users", userInfo);
       if (res.data.insertedId) console.log("User created in DB");
 
+      // 5. Redirect
       navigate(location.state || "/");
     } catch (err) {
       console.error("Registration error:", err);
@@ -59,15 +64,14 @@ const Register = () => {
   const handleSignInWithGoogle = () => {
     signInGoogle()
       .then((result) => {
-        console.log(result.user);
-
         const userInfo = {
           email: result.user.email,
-          displayName: result.user.name,
+          displayName: result.user.displayName,
           photoURL: result.user.photoURL,
+          role: selectedRole,
         };
 
-        axiosSecure.post("users", userInfo).then((res) => {
+        axiosSecure.post("/users", userInfo).then((res) => {
           console.log("user data has been stored", res.data);
           navigate(location?.state || "/");
         });

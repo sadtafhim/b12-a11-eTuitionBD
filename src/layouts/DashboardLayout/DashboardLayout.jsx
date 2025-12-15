@@ -7,10 +7,20 @@ import {
   FaUser,
   FaHome,
   FaSignOutAlt,
+  FaChalkboardTeacher,
+  FaChartLine,
+  FaBoxes,
+  FaTasks,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+
 import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import logo from "../../assets/logo.png";
-import { Link, NavLink, Outlet, useLocation } from "react-router";
+
+/* ---------------- NAVIGATION DATA ---------------- */
 
 const studentNavLinks = [
   {
@@ -28,133 +38,190 @@ const studentNavLinks = [
   { path: "/dashboard/profile", icon: FaUser, label: "Profile Settings" },
 ];
 
-const DashboardLayout = () => {
-  const { user, logOut } = useAuth();
-  const location = useLocation();
+const tutorNavLinks = [
+  {
+    path: "/dashboard/my-applications",
+    icon: FaBoxes,
+    label: "My Applications",
+  },
+  {
+    path: "/dashboard/ongoing-tuitions",
+    icon: FaTasks,
+    label: "Ongoing Tuitions",
+  },
+  {
+    path: "/dashboard/revenue-history",
+    icon: FaChartLine,
+    label: "Revenue History",
+  },
+  { path: "/dashboard/profile", icon: FaUser, label: "Profile Settings" },
+];
 
-  const handleLogout = () => {
-    logOut()
-      .then(() => {})
-      .catch((err) => console.error(err));
+const adminNavLinks = [
+  {
+    path: "/dashboard/user-management",
+    icon: FaUsers,
+    label: "User Management",
+  },
+  {
+    path: "/dashboard/tuition-management",
+    icon: FaChalkboardTeacher,
+    label: "Tuition Management",
+  },
+  {
+    path: "/dashboard/reports-analytics",
+    icon: FaFileInvoiceDollar,
+    label: "Reports & Analytics",
+  },
+  { path: "/dashboard/profile", icon: FaUser, label: "Profile Settings" },
+];
+
+const DashboardLayout = () => {
+  const { user, logOut, loading: authLoading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+
+  /* ---------- AUTH GUARD ---------- */
+  if (!user && !authLoading) {
+    navigate("/auth/login");
+    return null;
+  }
+
+  /* ---------- FETCH USER FROM DB ---------- */
+  const {
+    data: dbUserData,
+    isLoading: isUserDataLoading,
+    isError: isUserDataError,
+  } = useQuery({
+    queryKey: ["dbUserData", user?.email],
+    enabled: !!user?.email && !authLoading,
+    staleTime: 1000 * 60 * 10,
+    queryFn: async () => {
+      if (!user?.email) return null;
+
+      const res = await axiosSecure.get(`/users?email=${user.email}`);
+
+      if (!res.data || Object.keys(res.data).length === 0) {
+        return { role: "student", email: user.email };
+      }
+
+      return res.data;
+    },
+  });
+  console.log(dbUserData);
+
+  /* ---------- ROLE LOGIC ---------- */
+  const finalUser = dbUserData || user;
+  const userRole = finalUser?.role || "student";
+
+  let navLinks = studentNavLinks;
+  let menuTitle = "STUDENT MENU";
+
+  if (userRole === "tutor") {
+    navLinks = tutorNavLinks;
+    menuTitle = "TUTOR MENU";
+  } else if (userRole === "admin") {
+    navLinks = adminNavLinks;
+    menuTitle = "ADMIN MENU";
+  }
+
+  /* ---------- HELPERS ---------- */
+  const handleLogout = async () => {
+    try {
+      await logOut();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const getCurrentPageTitle = () => {
-    const activeLink = studentNavLinks.find((link) =>
-      location.pathname.includes(link.path)
+    const allLinks = [...studentNavLinks, ...tutorNavLinks, ...adminNavLinks];
+    const active = allLinks.find((link) =>
+      location.pathname.startsWith(link.path)
     );
-    if (activeLink) return activeLink.label;
+
+    if (active) return active.label;
     if (location.pathname === "/dashboard") return "Dashboard Overview";
-    return "Student Dashboard";
+
+    return `${userRole.charAt(0).toUpperCase() + userRole.slice(1)} Dashboard`;
   };
 
+  /* ---------- LOADING / ERROR ---------- */
+  if (authLoading || isUserDataLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <p className="ml-3 text-lg">
+          {authLoading ? "Authenticating User..." : "Fetching User Data..."}
+        </p>
+      </div>
+    );
+  }
+
+  if (isUserDataError) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-2xl text-error">Failed to Load Dashboard</h2>
+        <button onClick={handleLogout} className="btn btn-error mt-4">
+          Logout
+        </button>
+      </div>
+    );
+  }
+
+  /* ---------- UI ---------- */
   return (
-    <div>
-      <div className="drawer lg:drawer-open">
-        <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+    <div className="drawer lg:drawer-open">
+      <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
-        <div className="drawer-content flex flex-col min-h-screen">
-          <nav className="navbar w-full bg-base-300 shadow-md sticky top-0 z-10">
-            <div className="flex-none lg:hidden">
-              <label
-                htmlFor="my-drawer-4"
-                aria-label="open sidebar"
-                className="btn btn-square btn-ghost"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  className="inline-block w-6 h-6 stroke-current"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </label>
-            </div>
-
-            <div className="flex-1 px-4">
-              <h1 className="text-xl font-bold text-base-content">
-                {getCurrentPageTitle()}
-              </h1>
-            </div>
-            <div className="flex-none px-4">
-              <span className="hidden sm:inline text-sm font-medium text-base-content mr-3">
-                Hello, {user?.displayName || "Student"}
-              </span>
-              <div className="avatar">
-                <div className="w-10 rounded-full border-2 border-primary">
-                  <img
-                    src={user?.photoURL || "path/to/default/avatar.jpg"}
-                    alt="User Avatar"
-                  />
-                </div>
-              </div>
-            </div>
-          </nav>
-
-          <main className="p-4 md:p-8 grow">
-            <Outlet />
-          </main>
-        </div>
-
-        <div className="drawer-side z-20">
-          <label
-            htmlFor="my-drawer-4"
-            aria-label="close sidebar"
-            className="drawer-overlay"
-          ></label>
-
-          <div className="flex min-h-full flex-col w-64 bg-base-200 text-base-content">
-            <div className="p-4 flex items-center justify-center h-20 bg-primary text-primary-content">
-              <Link
-                to="/"
-                className="text-2xl font-bold font-heading flex items-center gap-2"
-              >
-                <img src={logo} alt="Logo" className="w-full" />
-              </Link>
-            </div>
-
-            <ul className="menu w-full grow p-4 text-base font-medium">
-              <li>
-                <NavLink to="/" className="text-base-content">
-                  <FaHome /> Main Homepage
-                </NavLink>
-              </li>
-
-              <div className="divider text-sm opacity-60 m-0">STUDENT MENU</div>
-
-              {studentNavLinks.map((item) => (
-                <li key={item.path}>
-                  <NavLink
-                    to={item.path}
-                    className={({ isActive }) =>
-                      `text-base-content ${
-                        isActive
-                          ? "active bg-primary text-primary-content hover:bg-primary"
-                          : "hover:bg-base-300"
-                      }`
-                    }
-                  >
-                    <item.icon /> {item.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-
-            {/* Sidebar Footer/Logout */}
-            <div className="p-4 border-t border-base-300">
-              <button
-                onClick={handleLogout}
-                className="btn btn-error btn-outline w-full text-error hover:text-white"
-              >
-                <FaSignOutAlt /> Logout
-              </button>
+      <div className="drawer-content flex flex-col min-h-screen">
+        <nav className="navbar bg-base-300 sticky top-0 z-10">
+          <div className="flex-1 px-4 text-xl font-bold">
+            {getCurrentPageTitle()}
+          </div>
+          <div className="flex items-center gap-3 px-4">
+            <span>{finalUser?.displayName || finalUser?.email}</span>
+            <div className="avatar w-10 rounded-full">
+              <img src={finalUser?.photoURL || logo} alt="avatar" />
             </div>
           </div>
+        </nav>
+
+        <main className="p-6 grow">
+          <Outlet />
+        </main>
+      </div>
+
+      <div className="drawer-side">
+        <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
+
+        <div className="w-64 bg-base-200 flex flex-col">
+          <Link to="/" className="p-4 bg-primary">
+            <img src={logo} alt="logo" />
+          </Link>
+
+          <ul className="menu p-4 grow">
+            <li>
+              <NavLink to="/">
+                <FaHome /> Main Homepage
+              </NavLink>
+            </li>
+
+            <div className="divider">{menuTitle}</div>
+
+            {navLinks.map((item) => (
+              <li key={item.path}>
+                <NavLink to={item.path}>
+                  <item.icon /> {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+
+          <button onClick={handleLogout} className="btn btn-error m-4">
+            <FaSignOutAlt /> Logout
+          </button>
         </div>
       </div>
     </div>

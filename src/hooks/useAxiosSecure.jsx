@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
-import useAuth from "./useAuth";
 import { useNavigate } from "react-router";
+import useAuth from "./useAuth";
 
 const axiosSecure = axios.create({
   baseURL: "http://localhost:3000",
@@ -15,8 +15,15 @@ const useAxiosSecure = () => {
     const reqInterceptor = axiosSecure.interceptors.request.use(
       async (config) => {
         if (user) {
-          const token = await user.getIdToken();
-          config.headers.authorization = `Bearer ${token}`;
+          try {
+            const token = await user.getIdToken();
+            config.headers.authorization = `Bearer ${token}`;
+          } catch (error) {
+            console.error(
+              "Error fetching ID token in request interceptor:",
+              error
+            );
+          }
         }
         return config;
       },
@@ -29,6 +36,9 @@ const useAxiosSecure = () => {
         const statusCode = err.response?.status;
 
         if (statusCode === 401 || statusCode === 403) {
+          console.log(
+            "Unauthorized request detected (401/403). Logging out..."
+          );
           await logOut();
           navigate("/auth/login");
         }
