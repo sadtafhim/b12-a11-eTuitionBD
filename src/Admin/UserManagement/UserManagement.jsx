@@ -1,28 +1,101 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FaEye, FaEdit, FaUserTag, FaTrashAlt } from "react-icons/fa";
-import useAxiosSecure from "../../hooks/useAxiosSecure"; // Adjust path as needed
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { format } from "date-fns";
+import EditUserModal from "../EditUserModal/EditUserModal.jsx";
+import Swal from "sweetalert2";
 
 const UserManagement = () => {
   const axiosSecure = useAxiosSecure();
 
-  // Fetch all users (since we don't pass an 'email' query, the backend returns the array)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
   const {
-    data: users = [], // Default to an empty array
+    data: users = [],
     isLoading,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
-      // The backend /users route returns an array of all users when no email is provided.
       const res = await axiosSecure.get("/users");
       return res.data;
     },
   });
 
-  // --- Loading and Error States ---
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleUpdateRole = async (user) => {
+    const { value: newRole } = await Swal.fire({
+      title: `Change Role for ${user.displayName || user.email}`,
+      input: "select",
+      inputOptions: {
+        student: "Student",
+        tutor: "Tutor",
+        admin: "Admin",
+      },
+      inputValue: user.role,
+      inputPlaceholder: "Select a new role",
+      showCancelButton: true,
+      confirmButtonText: "Confirm Change",
+      inputValidator: (value) => {
+        if (!value) {
+          return "You need to select a role!";
+        }
+        if (value === user.role) {
+          return "The role is already set to this value.";
+        }
+      },
+    });
+
+    if (newRole) {
+      try {
+        const payload = { role: newRole };
+        const res = await axiosSecure.patch(`/users/${user._id}`, payload);
+
+        if (res.data.modifiedCount > 0) {
+          Swal.fire({
+            title: "Success!",
+            text: `${user.displayName}'s role has been updated to ${newRole}.`,
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+          refetch();
+        } else {
+          Swal.fire(
+            "No Change",
+            "The role update request was sent but no change was recorded.",
+            "info"
+          );
+        }
+      } catch (error) {
+        console.error("Role update failed:", error);
+        Swal.fire({
+          title: "Error!",
+          text:
+            error.response?.data?.message ||
+            "Failed to update role. Check admin permissions.",
+          icon: "error",
+        });
+      }
+    }
+  };
+
+  const handleView = (userId) => console.log("View user:", userId);
+  const handleDelete = (userId) => console.log("Delete user:", userId);
+
   if (isLoading) {
     return (
       <div className="text-center py-10">
@@ -53,7 +126,6 @@ const UserManagement = () => {
 
       <div className="overflow-x-auto bg-base-200 rounded-lg shadow-xl">
         <table className="table w-full">
-          {/* Table Head */}
           <thead>
             <tr className="bg-base-300 text-base-content/80">
               <th>#</th>
@@ -64,13 +136,11 @@ const UserManagement = () => {
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody>
             {users.map((user, index) => (
               <tr key={user._id} className="hover:bg-base-100">
                 <th>{index + 1}</th>
 
-                {/* User Details (Image, Name, Email) */}
                 <td>
                   <div className="flex items-center space-x-3">
                     <div className="avatar">
@@ -90,7 +160,6 @@ const UserManagement = () => {
                   </div>
                 </td>
 
-                {/* Role */}
                 <td>
                   <span
                     className={`badge badge-lg font-bold capitalize 
@@ -106,46 +175,40 @@ const UserManagement = () => {
                   </span>
                 </td>
 
-                {/* Created At */}
                 <td>
                   {user.createdAt
                     ? format(new Date(user.createdAt), "MMM dd, yyyy")
                     : "N/A"}
                 </td>
 
-                {/* Actions Buttons */}
                 <td className="text-center">
                   <div className="flex justify-center space-x-2">
-                    {/* 1. View Profile Button */}
                     <button
-                      // onClick={() => handleView(user._id)}
+                      onClick={() => handleView(user._id)}
                       className="btn btn-ghost btn-sm tooltip"
                       data-tip="View Profile"
                     >
                       <FaEye className="text-info" />
                     </button>
 
-                    {/* 2. Update Info Button */}
                     <button
-                      // onClick={() => handleEdit(user._id)}
+                      onClick={() => handleEdit(user)}
                       className="btn btn-ghost btn-sm tooltip"
                       data-tip="Edit Details"
                     >
                       <FaEdit className="text-primary" />
                     </button>
 
-                    {/* 3. Modify Role Button */}
                     <button
-                      // onClick={() => handleUpdateRole(user)}
+                      onClick={() => handleUpdateRole(user)}
                       className="btn btn-ghost btn-sm tooltip"
                       data-tip="Change Role"
                     >
                       <FaUserTag className="text-warning" />
                     </button>
 
-                    {/* 4. Delete Account Button */}
                     <button
-                      // onClick={() => handleDelete(user._id)}
+                      onClick={() => handleDelete(user._id)}
                       className="btn btn-ghost btn-sm tooltip"
                       data-tip="Delete Account"
                     >
@@ -159,11 +222,18 @@ const UserManagement = () => {
         </table>
       </div>
 
-      {/* Optional: Add a button or summary below the table */}
       {users.length === 0 && (
         <p className="text-center py-8 text-base-content/70">
           No users found in the database.
         </p>
+      )}
+
+      {isModalOpen && selectedUser && (
+        <EditUserModal
+          user={selectedUser}
+          onClose={closeModal}
+          refetchUsers={refetch}
+        />
       )}
     </div>
   );
