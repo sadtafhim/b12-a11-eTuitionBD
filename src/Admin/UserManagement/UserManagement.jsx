@@ -93,8 +93,49 @@ const UserManagement = () => {
     }
   };
 
+  const handleDelete = (user) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You are about to permanently delete the account for ${
+        user.displayName || user.email
+      }. This action is irreversible.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await axiosSecure.delete(`/users/${user._id}`);
+
+          if (res.data.deletedCount > 0) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "The user account has been successfully removed.",
+              icon: "success",
+              timer: 2000,
+              showConfirmButton: false,
+            });
+            refetch();
+          } else {
+            Swal.fire("Error", "Could not delete the user account.", "error");
+          }
+        } catch (error) {
+          console.error("Delete failed:", error);
+          Swal.fire({
+            title: "Error!",
+            text:
+              error.response?.data?.message ||
+              "Failed to delete user. Check network and permissions.",
+            icon: "error",
+          });
+        }
+      }
+    });
+  };
+
   const handleView = (userId) => console.log("View user:", userId);
-  const handleDelete = (userId) => console.log("Delete user:", userId);
 
   if (isLoading) {
     return (
@@ -208,7 +249,7 @@ const UserManagement = () => {
                     </button>
 
                     <button
-                      onClick={() => handleDelete(user._id)}
+                      onClick={() => handleDelete(user)}
                       className="btn btn-ghost btn-sm tooltip"
                       data-tip="Delete Account"
                     >
