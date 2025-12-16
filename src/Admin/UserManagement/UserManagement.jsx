@@ -3,14 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { FaEye, FaEdit, FaUserTag, FaTrashAlt } from "react-icons/fa";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { format } from "date-fns";
-import EditUserModal from "../EditUserModal/EditUserModal.jsx";
+import EditUserModal from "../EditUserModal/EditUserModal";
+import UserProfileModal from "../UserProfileModal/UserProfileModal";
 import Swal from "sweetalert2";
 
 const UserManagement = () => {
   const axiosSecure = useAxiosSecure();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [userIdToView, setUserIdToView] = useState(null);
 
   const {
     data: users = [],
@@ -26,14 +29,26 @@ const UserManagement = () => {
     },
   });
 
+  // --- Edit Modal Handlers ---
   const handleEdit = (user) => {
     setSelectedUser(user);
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
     setSelectedUser(null);
+  };
+
+  // --- View Modal Handlers ---
+  const handleView = (userId) => {
+    setUserIdToView(userId);
+    setIsViewModalOpen(true);
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setUserIdToView(null);
   };
 
   const handleUpdateRole = async (user) => {
@@ -134,8 +149,6 @@ const UserManagement = () => {
       }
     });
   };
-
-  const handleView = (userId) => console.log("View user:", userId);
 
   if (isLoading) {
     return (
@@ -269,12 +282,16 @@ const UserManagement = () => {
         </p>
       )}
 
-      {isModalOpen && selectedUser && (
+      {isEditModalOpen && selectedUser && (
         <EditUserModal
           user={selectedUser}
-          onClose={closeModal}
+          onClose={closeEditModal}
           refetchUsers={refetch}
         />
+      )}
+
+      {isViewModalOpen && userIdToView && (
+        <UserProfileModal userId={userIdToView} onClose={closeViewModal} />
       )}
     </div>
   );
