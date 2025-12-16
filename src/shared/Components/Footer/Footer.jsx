@@ -51,12 +51,6 @@ const Footer = () => {
             >
               Careers
             </NavLink>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Partnerships
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Blog
-            </a>
           </nav>
 
           {/* Column 3: Legal */}
@@ -64,12 +58,18 @@ const Footer = () => {
             <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
               Legal
             </h6>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Terms of Use
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
+            <NavLink
+              to="/termsofservice"
+              className="link link-hover opacity-80 hover:text-primary transition-colors text-base"
+            >
+              Terms of Service
+            </NavLink>
+            <NavLink
+              to="/privacy-policy"
+              className="link link-hover opacity-80 hover:text-primary transition-colors text-base"
+            >
               Privacy Policy
-            </a>
+            </NavLink>
             <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
               Cookie Policy
             </a>

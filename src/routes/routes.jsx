@@ -17,6 +17,8 @@ import Career from "../pages/Career/Career";
 import UserManagement from "../Admin/UserManagement/UserManagement";
 import TuitionManagement from "../Admin/TuitionManagement/TuitionManagement";
 import AdminAnalytics from "../Admin/AdminAnalytics/AdminAnalytics";
+import TermsOfService from "../TermsOfService/TermsOfService";
+import DataPolicy from "../PrivacyPolicy/DataPolicy";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
       {
         path: "/career",
         element: <Career></Career>,
+      },
+      {
+        path: "/termsofservice",
+        element: <TermsOfService></TermsOfService>,
+      },
+      {
+        path: "/privacy-policy",
+        element: <DataPolicy></DataPolicy>,
       },
     ],
   },
