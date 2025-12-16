@@ -5,7 +5,7 @@ import {
   FaTag,
   FaClock,
   FaCheckCircle,
-  FaExclamationTriangle,
+  // FaExclamationTriangle is not used, remove if unnecessary
 } from "react-icons/fa";
 import { format } from "date-fns";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -23,11 +23,28 @@ const UserProfileModal = ({ userId, onClose }) => {
     queryKey: ["singleUser", userId],
     queryFn: async () => {
       if (!userId) return null;
+      // The API call uses the correct endpoint: /users/:id
       const res = await axiosSecure.get(`/users/${userId}`);
       return res.data;
     },
     enabled: !!userId,
   });
+
+  // Use React.useEffect to manage the dialog's open state via a ref.
+  // This is more reliable than relying solely on the 'modal-open' class.
+  const dialogRef = React.useRef(null);
+  React.useEffect(() => {
+    if (dialogRef.current && userId) {
+      // Show the modal when the component mounts and userId is valid
+      dialogRef.current.showModal();
+    }
+    // Cleanup function to ensure modal closes when component unmounts
+    return () => {
+      if (dialogRef.current) {
+        dialogRef.current.close();
+      }
+    };
+  }, [userId]);
 
   const getRoleColor = (role) => {
     switch (role) {
@@ -40,12 +57,27 @@ const UserProfileModal = ({ userId, onClose }) => {
     }
   };
 
+  // Helper to handle the actual closing logic, including the ref.
+  const handleClose = () => {
+    if (dialogRef.current) {
+      dialogRef.current.close();
+    }
+    onClose();
+  };
+
   return (
-    <dialog id="user_profile_modal" className="modal modal-open">
+    // FIX 1: Use a ref instead of relying on the 'modal-open' class alone
+    <dialog
+      id="user_profile_modal"
+      className="modal"
+      ref={dialogRef}
+      onCancel={handleClose}
+    >
       <div className="modal-box w-11/12 max-w-lg">
         <button
           className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          onClick={onClose}
+          // FIX 2: Use the handleClose wrapper
+          onClick={handleClose}
         >
           ✕
         </button>
@@ -63,22 +95,27 @@ const UserProfileModal = ({ userId, onClose }) => {
 
         {isError && (
           <div className="text-center py-6 text-error">
-            <p>Error loading profile: {error.message}</p>
+            <p>
+              Error loading profile:{" "}
+              {error?.message || "Check server logs for details."}
+            </p>
           </div>
         )}
 
+        {/* Render profile only if user data is successfully fetched */}
         {user && (
           <div className="flex flex-col items-center p-4 bg-base-100 rounded-lg shadow-inner">
             <div className="avatar mb-4">
               <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                <img
-                  src={
-                    user.photoURL || (
-                      <FaUserCircle className="w-full h-full text-base-content/50" />
-                    )
-                  }
-                  alt={`${user.displayName} profile`}
-                />
+                {/* FIX 3: Conditionally render the image or the placeholder icon */}
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={`${user.displayName} profile`}
+                  />
+                ) : (
+                  <FaUserCircle className="w-full h-full text-base-content/50 p-2" />
+                )}
               </div>
             </div>
 
@@ -111,6 +148,7 @@ const UserProfileModal = ({ userId, onClose }) => {
                 </span>
               </div>
 
+              {/* Added basic check for tutor/student specific data */}
               {user.phone && (
                 <div className="flex items-center text-lg">
                   <FaCheckCircle className="text-primary w-5 h-5 mr-3" />
@@ -122,7 +160,7 @@ const UserProfileModal = ({ userId, onClose }) => {
         )}
 
         <div className="modal-action mt-6">
-          <button className="btn btn-primary w-full" onClick={onClose}>
+          <button className="btn btn-primary w-full" onClick={handleClose}>
             Close
           </button>
         </div>

@@ -38,6 +38,7 @@ const MyTuitions = () => {
     confirmed: "badge-primary text-primary-content",
     applied: "badge-info text-info-content",
     pending: "badge-warning text-warning-content",
+    rejected: "badge-error text-error-content",
   };
 
   const getStatusBadge = (status) =>

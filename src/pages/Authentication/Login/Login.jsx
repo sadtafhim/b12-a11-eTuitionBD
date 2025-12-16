@@ -93,15 +93,6 @@ const Login = () => {
               )}
             </div>
 
-            {/* <div className="text-right">
-              <a
-                href="/reset-password"
-                className="link link-hover text-primary text-sm font-medium"
-              >
-                Forgot password?
-              </a>
-            </div> */}
-
             <button
               type="submit"
               className="btn btn-accent mt-6 w-full font-heading text-accent-content shadow-md transition-transform hover:scale-[1.01]"
