@@ -13,6 +13,10 @@ import PrivateRoutes from "./PrivateRoutes";
 import MyTuitions from "../Student/MyTuitions/MyTuitions";
 import EditTuition from "../Student/EditTuition/EditTuition";
 import ErrorPage from "../shared/Components/ErrorPage/ErrorPage";
+import Career from "../pages/Career/Career";
+import UserManagement from "../Admin/UserManagement/UserManagement";
+import TuitionManagement from "../Admin/TuitionManagement/TuitionManagement";
+import AdminAnalytics from "../Admin/AdminAnalytics/AdminAnalytics";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/contacts",
         element: <Contacts></Contacts>,
+      },
+      {
+        path: "/career",
+        element: <Career></Career>,
       },
     ],
   },
@@ -69,6 +77,18 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/edit-tuition/:id",
         element: <EditTuition></EditTuition>,
+      },
+      {
+        path: "/dashboard/user-management",
+        element: <UserManagement></UserManagement>,
+      },
+      {
+        path: "/dashboard/tuition-management",
+        element: <TuitionManagement></TuitionManagement>,
+      },
+      {
+        path: "/dashboard/reports-analytics",
+        element: <AdminAnalytics></AdminAnalytics>,
       },
     ],
   },

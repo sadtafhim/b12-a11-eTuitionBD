@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../../assets/logo.png";
+import { NavLink } from "react-router";
 
 // Simple Icon Components for contact info
 const PhoneIcon = () => (
@@ -33,36 +34,23 @@ const Footer = () => {
       {/* --------------------- Top Section: Links & Info --------------------- */}
       <footer className="footer bg-base-200 text-base-content p-12 lg:p-16 rounded-t-3xl shadow-2xl shadow-base-300/50">
         <div className="max-w-7xl mx-auto w-full footer sm:footer-horizontal justify-between gap-8 md:gap-16">
-          {/* Column 1: Services */}
-          <nav className="flex flex-col gap-2">
-            <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
-              Services
-            </h6>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Branding
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Design & UX
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Marketing
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Advertisement
-            </a>
-          </nav>
-
           {/* Column 2: Company */}
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
               Company
             </h6>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
+            <NavLink
+              to="/about"
+              className="link link-hover opacity-80 hover:text-primary transition-colors text-base"
+            >
               About Us
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
+            </NavLink>
+            <NavLink
+              to="/career"
+              className="link link-hover opacity-80 hover:text-primary transition-colors text-base"
+            >
               Careers
-            </a>
+            </NavLink>
             <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
               Partnerships
             </a>
@@ -130,7 +118,8 @@ const Footer = () => {
               alt="EtutionBD Logo"
             />
             <p className="text-sm opacity-90 leading-snug hidden sm:block">
-              **EtutionBD** <br className="sm:hidden" />
+              <span className="font-black">eTutionBD</span>{" "}
+              <br className="sm:hidden" />
               <span className="text-primary-content/70">
                 Empowering better tuition connection since 2024.
               </span>
