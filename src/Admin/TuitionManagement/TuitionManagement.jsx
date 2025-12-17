@@ -146,8 +146,8 @@ const TuitionManagement = () => {
       <div className="alert alert-info shadow-lg mb-6">
         <FaClock />
         <span>
-          **Action Required:** There are **{pendingTuitions.length}** tuition
-          posts awaiting your review.
+          <span className="font-bold">Action Required:</span> There are{" "}
+          {pendingTuitions.length} tuition posts awaiting your review.
         </span>
       </div>
 
@@ -197,25 +197,19 @@ const TuitionManagement = () => {
                 <td>
                   <p className="flex items-center">
                     <FaMapMarkerAlt className="mr-2 text-sm text-error" />
-                    {tuition.area}, {tuition.city}
+                    {tuition.division}, {tuition.district}
                   </p>
                   <p className="mt-1 flex items-center font-semibold text-success">
                     <FaDollarSign className="mr-2 text-lg" />
-                    {tuition.salaryRange}
+                    {tuition.budget}
                   </p>
                 </td>
 
                 {/* Contact Column (Assuming 'contact' object holds these) */}
                 <td>
-                  <div className="font-semibold">
-                    {tuition.contact?.name || "Student"}
-                  </div>
                   <div className="text-xs opacity-70 flex items-center">
                     <FaEnvelopeOpenText className="mr-1" />
-                    {tuition.contact?.email || "N/A"}
-                  </div>
-                  <div className="text-xs opacity-70">
-                    Phone: {tuition.contact?.phone || "N/A"}
+                    {tuition.email || "N/A"}
                   </div>
                 </td>
 

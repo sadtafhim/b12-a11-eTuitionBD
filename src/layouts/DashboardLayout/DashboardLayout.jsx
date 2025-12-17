@@ -12,6 +12,7 @@ import {
   FaBoxes,
   FaTasks,
   FaFileInvoiceDollar,
+  FaClipboardList,
 } from "react-icons/fa";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -44,6 +45,11 @@ const studentNavLinks = [
 ];
 
 const tutorNavLinks = [
+  {
+    path: "/dashboard/all-tuitions",
+    icon: FaClipboardList,
+    label: "All Tuitions",
+  },
   {
     path: "/dashboard/my-applications",
     icon: FaBoxes,

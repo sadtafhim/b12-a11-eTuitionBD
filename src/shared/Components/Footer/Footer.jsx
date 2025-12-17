@@ -1,8 +1,6 @@
 import React from "react";
 import logo from "../../../assets/logo.png";
 import { NavLink } from "react-router";
-
-// Simple Icon Components for contact info
 const PhoneIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -26,15 +24,12 @@ const MailIcon = () => (
 );
 
 const Footer = () => {
-  // Determine the current year for copyright
   const currentYear = new Date().getFullYear();
 
   return (
     <div className="mt-16 w-full">
-      {/* --------------------- Top Section: Links & Info --------------------- */}
       <footer className="footer bg-base-200 text-base-content p-12 lg:p-16 rounded-t-3xl shadow-2xl shadow-base-300/50">
         <div className="max-w-7xl mx-auto w-full footer sm:footer-horizontal justify-between gap-8 md:gap-16">
-          {/* Column 2: Company */}
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
               Company
@@ -52,8 +47,6 @@ const Footer = () => {
               Careers
             </NavLink>
           </nav>
-
-          {/* Column 3: Legal */}
           <nav className="flex flex-col gap-2">
             <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
               Legal
@@ -77,8 +70,6 @@ const Footer = () => {
               Accessibility
             </a>
           </nav>
-
-          {/* Column 4: Contact/Newsletter (Enhanced) */}
           <nav className="flex flex-col gap-3">
             <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
               Get in Touch
@@ -107,8 +98,6 @@ const Footer = () => {
           </nav>
         </div>
       </footer>
-
-      {/* --------------------- Bottom Section: Branding & Copyright --------------------- */}
       <footer className="footer bg-primary text-primary-content px-10 py-5 shadow-inner shadow-primary-focus/50">
         <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center justify-between">
           <aside className="flex items-center gap-6">
@@ -126,7 +115,6 @@ const Footer = () => {
             </p>
           </aside>
 
-          {/* Copyright */}
           <div className="text-xs md:text-sm pt-4 md:pt-0 opacity-80 font-light">
             <p>Copyright © {currentYear} EtutionBD — All rights reserved.</p>
           </div>

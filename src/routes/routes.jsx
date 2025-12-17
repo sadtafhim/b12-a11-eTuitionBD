@@ -19,6 +19,8 @@ import TuitionManagement from "../Admin/TuitionManagement/TuitionManagement";
 import AdminAnalytics from "../Admin/AdminAnalytics/AdminAnalytics";
 import TermsOfService from "../TermsOfService/TermsOfService";
 import DataPolicy from "../PrivacyPolicy/DataPolicy";
+import AllTuition from "../Tutor/AllTuition/AllTuition";
+import MyApplications from "../Tutor/MyApplication/MyApplication";
 
 const router = createBrowserRouter([
   {
@@ -99,6 +101,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/reports-analytics",
         element: <AdminAnalytics></AdminAnalytics>,
+      },
+      {
+        path: "/dashboard/all-tuitions",
+        element: <AllTuition></AllTuition>,
+      },
+      {
+        path: "/dashboard/my-applications",
+        element: <MyApplications></MyApplications>,
       },
     ],
   },
