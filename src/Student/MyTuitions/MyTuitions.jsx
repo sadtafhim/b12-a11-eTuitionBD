@@ -19,19 +19,17 @@ const MyTuitions = () => {
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
 
-  const {
-    data: tuitions = [],
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["myTuitions", user?.email],
     queryFn: async () => {
-      if (!user?.email) return [];
+      if (!user?.email) return { result: [], totalCount: 0 };
       const res = await axiosSecure.get(`/tuitions?email=${user.email}`);
       return res.data;
     },
     enabled: !!user?.email,
   });
+
+  const tuitions = data?.result || [];
 
   const STATUS_BADGE_MAP = {
     approved: "badge-success text-success-content",

@@ -21,6 +21,7 @@ import TermsOfService from "../TermsOfService/TermsOfService";
 import DataPolicy from "../PrivacyPolicy/DataPolicy";
 import AllTuition from "../Tutor/AllTuition/AllTuition";
 import MyApplications from "../Tutor/MyApplication/MyApplication";
+import ProfileSetting from "../pages/Authentication/ProfileSetting/ProfileSetting";
 
 const router = createBrowserRouter([
   {
@@ -107,8 +108,8 @@ const router = createBrowserRouter([
         element: <AllTuition></AllTuition>,
       },
       {
-        path: "/dashboard/my-applications",
-        element: <MyApplications></MyApplications>,
+        path: "/dashboard/profile",
+        element: <ProfileSetting></ProfileSetting>,
       },
     ],
   },

@@ -37,11 +37,6 @@ const studentNavLinks = [
   { path: "/dashboard/applied-tutors", icon: FaUsers, label: "Applied Tutors" },
   { path: "/dashboard/payments", icon: FaCreditCard, label: "Payments" },
   { path: "/dashboard/profile", icon: FaUser, label: "Profile Settings" },
-  {
-    path: "/dashboard/user-management",
-    icon: FaUsers,
-    label: "User Management",
-  },
 ];
 
 const tutorNavLinks = [

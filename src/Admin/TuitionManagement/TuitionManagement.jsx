@@ -18,18 +18,15 @@ import { format } from "date-fns";
 const TuitionManagement = () => {
   const axiosSecure = useAxiosSecure();
 
-  const {
-    data: tuitions = [],
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["allTuitionsAdmin"],
     queryFn: async () => {
       const res = await axiosSecure.get("/tuitions");
       return res.data;
     },
   });
+
+  const tuitions = data?.result || [];
 
   const handleUpdateStatus = async (tuition, newStatus) => {
     const action = newStatus === "approved" ? "Approve" : "Reject";
