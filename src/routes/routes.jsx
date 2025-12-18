@@ -22,6 +22,8 @@ import DataPolicy from "../PrivacyPolicy/DataPolicy";
 import AllTuition from "../Tutor/AllTuition/AllTuition";
 import MyApplications from "../Tutor/MyApplication/MyApplication";
 import ProfileSetting from "../pages/Authentication/ProfileSetting/ProfileSetting";
+import Payment from "../Payment/StripePromise/StripePromise";
+import AppliedTutors from "../Student/AppliedTutors/AppliedTutors";
 
 const router = createBrowserRouter([
   {
@@ -111,8 +113,17 @@ const router = createBrowserRouter([
         path: "/dashboard/profile",
         element: <ProfileSetting></ProfileSetting>,
       },
+      {
+        path: "/dashboard/applied-tutors/:id",
+        element: <AppliedTutors></AppliedTutors>,
+      },
+      {
+        path: "/dashboard/payment",
+        element: <Payment></Payment>,
+      },
     ],
   },
+
 ]);
 
 export default router;

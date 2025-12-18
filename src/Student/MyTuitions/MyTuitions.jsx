@@ -6,9 +6,9 @@ import {
   FaTrash,
   FaEdit,
   FaClock,
-  FaUserClock,
   FaMapMarkerAlt,
   FaDollarSign,
+  FaUsers,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
@@ -74,7 +74,7 @@ const MyTuitions = () => {
   if (isLoading) {
     return (
       <div className="h-screen flex justify-center items-center">
-        <LoadingSpinner></LoadingSpinner>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -101,64 +101,69 @@ const MyTuitions = () => {
           {tuitions.map((tuition) => (
             <div
               key={tuition._id}
-              className="card bg-base-200 shadow-xl border-t-4 border-primary hover:shadow-2xl transition-shadow duration-300"
+              className="card bg-base-100 shadow-xl border-t-4 border-primary hover:shadow-2xl transition-all duration-300"
             >
               <div className="card-body p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h2 className="card-title text-2xl font-heading text-primary wrap-break-words">
+                <div className="flex justify-between items-start mb-4 gap-2">
+                  <h2 className="card-title text-xl font-heading text-primary wrap-break-words leading-tight">
                     {tuition.subject} ({tuition.classLevel})
                   </h2>
                   <div
                     className={`badge ${getStatusBadge(
                       tuition.status
-                    )} font-semibold shadow-md`}
+                    )} font-semibold shadow-sm text-[10px] py-3`}
                   >
                     {tuition.status?.toUpperCase()}
                   </div>
                 </div>
 
                 <div className="space-y-2 text-base-content text-sm">
-                  <p>
-                    <strong>
-                      <FaMapMarkerAlt className="inline mr-2 text-accent" />
-                      Location:
-                    </strong>{" "}
-                    {tuition.district}, {tuition.division}
+                  <p className="flex items-center gap-2">
+                    <FaMapMarkerAlt className="text-accent" />
+                    <span>{tuition.district}, {tuition.division}</span>
                   </p>
-                  <p>
-                    <strong>
-                      <FaDollarSign className="inline mr-2 text-accent" />
-                      Budget:
-                    </strong>{" "}
-                    {tuition.budget} BDT/month
+                  <p className="flex items-center gap-2">
+                    <FaDollarSign className="text-accent" />
+                    <span>{tuition.budget} BDT/month</span>
                   </p>
-                  <p>
-                    <strong>
-                      <FaClock className="inline mr-2 text-accent" />
-                      Frequency:
-                    </strong>{" "}
-                    {tuition.daysPerWeek}
+                  <p className="flex items-center gap-2">
+                    <FaClock className="text-accent" />
+                    <span>{tuition.daysPerWeek}</span>
                   </p>
                 </div>
 
-                <p className="text-sm opacity-80 mt-4 h-12 overflow-hidden text-ellipsis">
-                  <strong className="font-black">Details:</strong>{" "}
-                  {tuition.description.substring(0, 100)}...
+                <p className="text-xs opacity-70 mt-4 h-10 overflow-hidden text-ellipsis">
+                  <span className="font-bold">Details:</span>{" "}
+                  {tuition.description.substring(0, 80)}...
                 </p>
 
-                <div className="card-actions justify-end mt-4 pt-4 border-t border-base-300 gap-3">
-                  <button
-                    onClick={() => handleEdit(tuition._id)}
-                    className="btn btn-sm btn-outline btn-primary text-primary"
-                  >
-                    <FaEdit /> Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(tuition._id)}
-                    className="btn btn-sm btn-outline btn-error text-error"
-                  >
-                    <FaTrash /> Delete
-                  </button>
+                <div className="mt-6 pt-4 border-t border-base-200">
+                  {tuition.status !== "pending" && tuition.status !== "rejected" && (
+                    <button
+                      onClick={() => navigate(`/dashboard/applied-tutors/${tuition._id}`)}
+                      className="btn btn-primary btn-outline btn-block btn-sm mb-3 gap-2"
+                    >
+                      <FaUsers /> View Applicants
+                    </button>
+                  )}
+
+                  <div className="flex justify-between gap-2">
+                    <button
+                      disabled={tuition.status === "confirmed"}
+                      onClick={() => handleEdit(tuition._id)}
+                      className="btn btn-sm btn-ghost bg-base-200 flex-1 gap-2"
+                    >
+                      <FaEdit /> Edit
+                    </button>
+
+                    <button
+                      disabled={tuition.status === "confirmed"}
+                      onClick={() => handleDelete(tuition._id)}
+                      className="btn btn-sm btn-ghost bg-red-50 text-error hover:bg-red-100 flex-1 gap-2"
+                    >
+                      <FaTrash /> Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

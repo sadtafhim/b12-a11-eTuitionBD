@@ -34,7 +34,6 @@ const studentNavLinks = [
     icon: FaPenSquare,
     label: "Post New Tuition",
   },
-  { path: "/dashboard/applied-tutors", icon: FaUsers, label: "Applied Tutors" },
   { path: "/dashboard/payments", icon: FaCreditCard, label: "Payments" },
   { path: "/dashboard/profile", icon: FaUser, label: "Profile Settings" },
 ];
