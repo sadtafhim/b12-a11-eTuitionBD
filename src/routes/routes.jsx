@@ -24,6 +24,7 @@ import MyApplications from "../Tutor/MyApplication/MyApplication";
 import ProfileSetting from "../pages/Authentication/ProfileSetting/ProfileSetting";
 import Payment from "../Payment/StripePromise/StripePromise";
 import AppliedTutors from "../Student/AppliedTutors/AppliedTutors";
+import PaymentHistory from "../Student/PaymentHistory/PaymentHistory";
 
 const router = createBrowserRouter([
   {
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
         element: <AllTuition></AllTuition>,
       },
       {
+        path: "/dashboard/my-applications",
+        element: <MyApplications></MyApplications>,
+      },
+      {
         path: "/dashboard/profile",
         element: <ProfileSetting></ProfileSetting>,
       },
@@ -120,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/payment",
         element: <Payment></Payment>,
+      },
+      {
+        path: "/dashboard/student-payment",
+        element: <PaymentHistory></PaymentHistory>,
       },
     ],
   },

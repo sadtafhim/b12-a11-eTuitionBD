@@ -34,7 +34,7 @@ const studentNavLinks = [
     icon: FaPenSquare,
     label: "Post New Tuition",
   },
-  { path: "/dashboard/payments", icon: FaCreditCard, label: "Payments" },
+  { path: "/dashboard/student-payment", icon: FaCreditCard, label: "My Payments" },
   { path: "/dashboard/profile", icon: FaUser, label: "Profile Settings" },
 ];
 

@@ -101,9 +101,9 @@ const MyApplications = () => {
                         <FaClock className="animate-pulse" /> Pending
                       </span>
                     )}
-                    {app.status === "approved" && (
+                    {app.status === "accepted" && (
                       <span className="badge badge-success py-3 px-4 gap-2 text-white font-medium">
-                        <FaCheckCircle /> Approved
+                        <FaCheckCircle /> Accepted
                       </span>
                     )}
                     {app.status === "rejected" && (
