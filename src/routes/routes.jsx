@@ -25,6 +25,7 @@ import ProfileSetting from "../pages/Authentication/ProfileSetting/ProfileSettin
 import Payment from "../Payment/StripePromise/StripePromise";
 import AppliedTutors from "../Student/AppliedTutors/AppliedTutors";
 import PaymentHistory from "../Student/PaymentHistory/PaymentHistory";
+import OngoingTuitions from "../Tutor/OngoingTuitions/OngoingTuitions";
 
 const router = createBrowserRouter([
   {
@@ -121,6 +122,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/applied-tutors/:id",
         element: <AppliedTutors></AppliedTutors>,
+      },
+      {
+        path: "/dashboard/ongoing-tuitions",
+        element: <OngoingTuitions></OngoingTuitions>,
       },
       {
         path: "/dashboard/payment",
