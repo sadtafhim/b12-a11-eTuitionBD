@@ -26,6 +26,7 @@ import Payment from "../Payment/StripePromise/StripePromise";
 import AppliedTutors from "../Student/AppliedTutors/AppliedTutors";
 import PaymentHistory from "../Student/PaymentHistory/PaymentHistory";
 import OngoingTuitions from "../Tutor/OngoingTuitions/OngoingTuitions";
+import TutorRevenue from "../Tutor/TutorRevenue/TutorRevenue";
 
 const router = createBrowserRouter([
   {
@@ -134,6 +135,10 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/student-payment",
         element: <PaymentHistory></PaymentHistory>,
+      },
+      {
+        path: "/dashboard/revenue-history",
+        element: <TutorRevenue></TutorRevenue>,
       },
     ],
   },
