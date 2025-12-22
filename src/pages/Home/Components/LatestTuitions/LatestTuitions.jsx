@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { FaMapMarkerAlt, FaBookOpen, FaMoneyBillWave, FaArrowRight } from "react-icons/fa";
+import { FaMapMarkerAlt, FaBookOpen, FaMoneyBillWave, FaArrowRight, FaCalendarAlt, FaClock } from "react-icons/fa";
 import { Link } from "react-router";
 import LoadingSpinner from "../../../../shared/Components/LoadingSpinner/LoadingSpinner";
 
@@ -17,62 +17,82 @@ const LatestTuitions = () => {
     if (isLoading) return <LoadingSpinner />;
 
     return (
-        <section className="py-16 bg-gray-50">
-            <div className="container mx-auto px-4">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold text-gray-800 mb-4">Latest Tuition Posts</h2>
-                    <p className="text-gray-500 max-w-2xl mx-auto">
-                        Explore the most recent opportunities. Find the perfect student and start your teaching journey today.
+        <section className="bg-base-100 py-20 lg:py-28">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div className="text-center mb-16">
+                    <h2 className="text-sm font-semibold uppercase text-accent tracking-wider">
+                        Available Opportunities
+                    </h2>
+                    <h1 className="text-4xl lg:text-5xl font-extrabold mt-2 text-base-content">
+                        Latest Tuition Posts
+                    </h1>
+                    <p className="text-base-content opacity-70 max-w-2xl mx-auto mt-4">
+                        Discover the newest tutoring requests. Filter by subject, location, and budget to find your perfect student.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {tuitions.map((post) => (
-                        <div key={post._id} className="card bg-white shadow-xl hover:shadow-2xl transition-shadow border border-gray-100">
-                            <div className="card-body p-6">
-                                <div className="flex justify-between items-start mb-4">
-                                    <span className="badge badge-primary badge-outline font-semibold">
-                                        {post.classCategory || "General"}
-                                    </span>
-                                    <span className="text-xs text-gray-400 font-medium">
-                                        {new Date(post.createdAt).toLocaleDateString()}
-                                    </span>
-                                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {tuitions.map((post, index) => (
+                        <div
+                            key={post._id}
+                            className="card bg-base-200 shadow-xl p-7 rounded-xl relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-[1.03] group flex flex-col h-full"
+                        >
 
-                                <h3 className="text-xl font-bold text-gray-800 mb-2 truncate">
-                                    {post.tuitionTitle}
-                                </h3>
+                            <div className={`absolute top-0 left-0 w-full h-2 ${index % 2 === 0 ? 'bg-primary' : 'bg-accent'}`}></div>
 
-                                <div className="space-y-3 mb-6">
-                                    <div className="flex items-center gap-2 text-gray-600 text-sm">
-                                        <FaBookOpen className="text-primary" />
-                                        <span>Subject: <span className="font-medium text-gray-800">{post.subject}</span></span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-600 text-sm">
-                                        <FaMapMarkerAlt className="text-primary" />
-                                        <span>{post.location || "Remote / Online"}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 text-gray-600 text-sm">
-                                        <FaMoneyBillWave className="text-success" />
-                                        <span className="font-bold text-lg text-gray-800">{post.salary} BDT</span>
-                                    </div>
-                                </div>
-
-                                <div className="card-actions mt-auto">
-                                    <Link to={`/tuition/${post._id}`} className="btn btn-primary btn-block gap-2">
-                                        View Details <FaArrowRight className="text-xs" />
-                                    </Link>
+                            <div className="flex justify-between items-start mb-5">
+                                <span className={`badge border-none font-bold py-3 px-4 ${index % 2 === 0 ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'}`}>
+                                    {post.classLevel || "General"}
+                                </span>
+                                <div className="flex items-center gap-1 text-xs text-base-content opacity-50 font-medium">
+                                    <FaCalendarAlt size={12} />
+                                    {new Date(post.createdAt).toLocaleDateString()}
                                 </div>
                             </div>
+
+                            <h3 className="text-2xl font-extrabold text-base-content mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                                Need {post.subject} Tutor
+                            </h3>
+
+                            <p className="text-sm text-base-content opacity-60 line-clamp-2 mb-6 italic">
+                                "{post.description}"
+                            </p>
+
+                            <div className="space-y-4 mb-8 grow">
+                                <div className="flex items-center gap-3 text-base-content">
+                                    <div className={`p-2 rounded-lg ${index % 2 === 0 ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'}`}>
+                                        <FaMapMarkerAlt size={14} />
+                                    </div>
+                                    <span className="text-sm font-medium">
+                                        {post.district}, {post.division}
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center gap-3 text-base-content">
+                                    <div className={`p-2 rounded-lg ${index % 2 === 0 ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'}`}>
+                                        <FaClock size={14} />
+                                    </div>
+                                    <span className="text-sm opacity-80">{post.daysPerWeek}</span>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 rounded-lg bg-success/10 text-success">
+                                        <FaMoneyBillWave size={14} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] uppercase font-bold opacity-50 leading-none">Monthly Budget</span>
+                                        <span className="font-extrabold text-xl text-base-content">
+                                            {post.budget} <span className="text-xs font-normal opacity-60">BDT</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     ))}
                 </div>
 
-                <div className="text-center mt-12">
-                    <Link to="/all-tuitions" className="btn btn-outline btn-primary px-10 rounded-full border-2">
-                        Browse All Posts
-                    </Link>
-                </div>
             </div>
         </section>
     );

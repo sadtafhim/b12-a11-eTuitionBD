@@ -8,6 +8,7 @@ import logo from "../../../assets/logo.png";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { Link, useLocation, useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const [selectedRole, setSelectedRole] = useState("student");
@@ -25,10 +26,8 @@ const Register = () => {
     try {
       const profileImg = data.photo[0];
 
-      // 1. Register user with Firebase Auth
       const result = await registerUser(data.email, data.password);
 
-      // 2. Upload image to ImgBB
       const formData = new FormData();
       formData.append("image", profileImg);
       const imgRes = await axios.post(
@@ -37,13 +36,11 @@ const Register = () => {
       );
       const photoURL = imgRes.data.data.url;
 
-      // 3. Update Firebase profile
       await updateUserProfile({
         displayName: data.name,
         photoURL,
       });
 
-      // 4. Save user in your backend
       const userInfo = {
         email: data.email,
         displayName: data.name,
@@ -54,10 +51,22 @@ const Register = () => {
       const res = await axiosSecure.post("/users", userInfo);
       if (res.data.insertedId) console.log("User created in DB");
 
-      // 5. Redirect
       navigate(location.state || "/");
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Your have successfully Registered",
+        showConfirmButton: false,
+        timer: 1000
+      });
     } catch (err) {
-      console.error("Registration error:", err);
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: err.message || "Something went wrong",
+        showConfirmButton: false,
+        timer: 1000,
+      })
     }
   };
 
@@ -75,51 +84,59 @@ const Register = () => {
           console.log("user data has been stored", res.data);
           navigate(location?.state || "/");
         });
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Your have successfully Registered",
+          showConfirmButton: false,
+          timer: 1000
+        });
       })
-      .catch((error) => console.error(error));
+      .catch((err) => Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: err.message || "Something went wrong",
+        showConfirmButton: false,
+        timer: 1000,
+      }));
   };
 
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center py-10">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto rounded-xl overflow-hidden shadow-2xl">
-        {/* Form Side */}
         <div className="w-full lg:w-1/2 p-8 md:p-12 bg-base-100 flex flex-col justify-center">
           <h2 className="text-3xl font-heading font-bold text-base-content mb-6 text-center">
             Create Your Account
           </h2>
 
-          {/* Role selection */}
           <div className="flex justify-around gap-4 mb-8">
             <button
               type="button"
               onClick={() => setSelectedRole("student")}
-              className={`btn btn-sm md:btn-md font-heading ${
-                selectedRole === "student"
-                  ? "btn-primary shadow-lg"
-                  : "btn-outline btn-primary/70"
-              }`}
+              className={`btn btn-sm md:btn-md font-heading ${selectedRole === "student"
+                ? "btn-primary shadow-lg"
+                : "btn-outline btn-primary/70"
+                }`}
             >
               <FaUserGraduate className="text-lg" /> Register as Student
             </button>
             <button
               type="button"
               onClick={() => setSelectedRole("tutor")}
-              className={`btn btn-sm md:btn-md font-heading ${
-                selectedRole === "tutor"
-                  ? "btn-primary shadow-lg"
-                  : "btn-outline btn-primary/70"
-              }`}
+              className={`btn btn-sm md:btn-md font-heading ${selectedRole === "tutor"
+                ? "btn-primary shadow-lg"
+                : "btn-outline btn-primary/70"
+                }`}
             >
               <FaChalkboardTeacher className="text-lg" /> Register as Tutor
             </button>
           </div>
 
-          {/* Form */}
           <form
             onSubmit={handleSubmit(handleRegistration)}
             className="space-y-4"
           >
-            {/* Name */}
+
             <div>
               <label className="label text-base-content font-medium font-body">
                 Name
@@ -135,7 +152,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Email */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Email
@@ -153,7 +169,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Phone */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Phone
@@ -177,7 +192,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Image */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Image
@@ -194,7 +208,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Password */}
             <div>
               <label className="label text-base-content font-medium font-body">
                 Password
@@ -224,7 +237,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               className="btn btn-accent mt-6 w-full font-heading text-accent-content shadow-md transition-transform hover:scale-[1.01]"
@@ -251,7 +263,6 @@ const Register = () => {
           </form>
         </div>
 
-        {/* Right Side Info */}
         <div className="hidden lg:flex w-full lg:w-1/2 flex-col justify-center items-center p-12 bg-primary text-primary-content">
           <img src={logo} alt="eTuitionBd Logo" className="w-48 mb-6" />
           <h3 className="text-3xl font-heading font-bold text-center mb-4">

@@ -3,6 +3,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import heroBG from "../../../../assets/hero-bg.jpg";
 import { Typewriter } from "react-simple-typewriter";
 import { Fade } from "react-awesome-reveal";
+import { Link } from "react-router";
 
 const Hero = () => {
   return (
@@ -52,9 +53,9 @@ const Hero = () => {
               </div>
             </div>
 
-            <button className="btn border-accent bg-transparent text-accent rounded-lg mt-4 w-fit shadow-xl transition-transform hover:scale-[1.02]">
+            <Link to="/dashboard" className="btn border-accent bg-transparent text-accent rounded-lg mt-4 w-fit shadow-xl transition-transform hover:scale-[1.02]">
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       </div>

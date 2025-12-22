@@ -63,12 +63,6 @@ const Footer = () => {
             >
               Privacy Policy
             </NavLink>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Cookie Policy
-            </a>
-            <a className="link link-hover opacity-80 hover:text-primary transition-colors text-base">
-              Accessibility
-            </a>
           </nav>
           <nav className="flex flex-col gap-3">
             <h6 className="footer-title text-xl font-bold text-base-content/90 border-b border-primary/20 pb-2 mb-2">
@@ -83,17 +77,6 @@ const Footer = () => {
               <span className="text-base font-medium">
                 support@etutionbd.com
               </span>
-            </div>
-            <p className="text-sm pt-2 text-base-content/70">
-              Stay updated with our latest news and offers.
-            </p>
-            <div className="join w-full mt-2">
-              <input
-                type="email"
-                placeholder="Email address"
-                className="input input-bordered join-item w-full"
-              />
-              <button className="btn btn-primary join-item">Sign Up</button>
             </div>
           </nav>
         </div>
