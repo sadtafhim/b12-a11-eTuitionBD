@@ -114,7 +114,6 @@ const DashboardLayout = () => {
       return res.data;
     },
   });
-  console.log(dbUserData);
 
   /* ---------- ROLE LOGIC ---------- */
   const finalUser = dbUserData || user;
@@ -136,7 +135,6 @@ const DashboardLayout = () => {
     try {
       await logOut();
     } catch (err) {
-      console.error(err);
     }
   };
 

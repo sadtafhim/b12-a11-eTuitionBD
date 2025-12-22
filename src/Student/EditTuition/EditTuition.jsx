@@ -223,7 +223,6 @@ const EditTuition = () => {
             }
           })
           .catch((error) => {
-            console.error("Update error:", error);
             Swal.fire(
               "Error",
               "Failed to update tuition. Check network or server logs.",

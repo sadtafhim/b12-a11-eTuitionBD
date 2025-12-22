@@ -32,7 +32,6 @@ const Navbar = () => {
     try {
       await logOut();
     } catch (err) {
-      console.log(err);
     }
   };
 

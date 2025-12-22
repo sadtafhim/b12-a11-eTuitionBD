@@ -70,7 +70,6 @@ const ProfileSetting = () => {
         }
       }
     } catch (error) {
-      console.error("Profile Update Error:", error);
       Swal.fire({
         title: "Update Failed",
         text:
@@ -188,9 +187,8 @@ const ProfileSetting = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`btn btn-primary btn-block shadow-lg gap-2 text-white ${
-                  loading ? "loading" : ""
-                }`}
+                className={`btn btn-primary btn-block shadow-lg gap-2 text-white ${loading ? "loading" : ""
+                  }`}
               >
                 {!loading && <FaSave />}
                 {loading ? "Updating Account..." : "Save All Changes"}

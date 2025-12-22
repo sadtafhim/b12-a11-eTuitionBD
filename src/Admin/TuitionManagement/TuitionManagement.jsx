@@ -33,9 +33,8 @@ const TuitionManagement = () => {
 
     const { isConfirmed } = await Swal.fire({
       title: `${action} Tuition Post?`,
-      html: `You are about to **${action.toLowerCase()}** the tuition post for **${
-        tuition.subject
-      } (${tuition.classLevel})**.`,
+      html: `You are about to **${action.toLowerCase()}** the tuition post for **${tuition.subject
+        } (${tuition.classLevel})**.`,
       icon: action === "Approve" ? "warning" : "error",
       showCancelButton: true,
       confirmButtonColor: action === "Approve" ? "#10B981" : "#EF4444",
@@ -66,7 +65,6 @@ const TuitionManagement = () => {
           );
         }
       } catch (error) {
-        console.error(`${action} failed:`, error);
         Swal.fire({
           title: "Error!",
           text:

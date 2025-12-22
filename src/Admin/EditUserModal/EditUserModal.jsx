@@ -5,8 +5,6 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 const EditUserModal = ({ user, onClose, refetchUsers }) => {
   const axiosSecure = useAxiosSecure();
 
-  console.log(user);
-
   const [formData, setFormData] = useState({
     displayName: user?.displayName || "",
     photoURL: user?.photoURL || "",
@@ -62,12 +60,11 @@ const EditUserModal = ({ user, onClose, refetchUsers }) => {
         });
       }
     } catch (error) {
-      console.error("User update failed:", error);
       Swal.fire({
         title: "Error!",
         text:
           error.response?.data?.message ||
-          "Failed to update user. Check console for details.",
+          "Failed to update user.",
         icon: "error",
       });
     } finally {

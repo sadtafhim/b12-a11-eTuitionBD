@@ -96,7 +96,6 @@ const UserManagement = () => {
           );
         }
       } catch (error) {
-        console.error("Role update failed:", error);
         Swal.fire({
           title: "Error!",
           text:
@@ -111,9 +110,8 @@ const UserManagement = () => {
   const handleDelete = (user) => {
     Swal.fire({
       title: "Are you sure?",
-      text: `You are about to permanently delete the account for ${
-        user.displayName || user.email
-      }. This action is irreversible.`,
+      text: `You are about to permanently delete the account for ${user.displayName || user.email
+        }. This action is irreversible.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -137,7 +135,6 @@ const UserManagement = () => {
             Swal.fire("Error", "Could not delete the user account.", "error");
           }
         } catch (error) {
-          console.error("Delete failed:", error);
           Swal.fire({
             title: "Error!",
             text:
@@ -160,7 +157,6 @@ const UserManagement = () => {
   }
 
   if (isError) {
-    console.error("User Management Fetch Error:", error);
     return (
       <div className="text-center py-10 text-error">
         <h3 className="text-2xl font-semibold">Error Loading Users</h3>
@@ -217,13 +213,12 @@ const UserManagement = () => {
                 <td>
                   <span
                     className={`badge badge-lg font-bold capitalize 
-                                            ${
-                                              user.role === "admin"
-                                                ? "badge-error"
-                                                : user.role === "tutor"
-                                                ? "badge-warning"
-                                                : "badge-success"
-                                            }`}
+                                            ${user.role === "admin"
+                        ? "badge-error"
+                        : user.role === "tutor"
+                          ? "badge-warning"
+                          : "badge-success"
+                      }`}
                   >
                     {user.role || "student"}
                   </span>

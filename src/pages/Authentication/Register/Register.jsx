@@ -49,7 +49,9 @@ const Register = () => {
       };
 
       const res = await axiosSecure.post("/users", userInfo);
-      if (res.data.insertedId) console.log("User created in DB");
+      if (res.data.insertedId) {
+        const hello = "hello";
+      }
 
       navigate(location.state || "/");
       Swal.fire({
@@ -81,7 +83,6 @@ const Register = () => {
         };
 
         axiosSecure.post("/users", userInfo).then((res) => {
-          console.log("user data has been stored", res.data);
           navigate(location?.state || "/");
         });
         Swal.fire({

@@ -188,7 +188,6 @@ const PostNewTuition = () => {
           });
         });
         reset();
-        console.log(data);
       }
     });
   };
